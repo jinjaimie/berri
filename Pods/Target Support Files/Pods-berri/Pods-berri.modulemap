@@ -1,0 +1,6 @@
+framework module Pods_berri {
+  umbrella header "Pods-berri-umbrella.h"
+
+  export *
+  module * { export * }
+}

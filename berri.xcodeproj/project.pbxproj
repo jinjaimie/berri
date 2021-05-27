@@ -11,15 +11,21 @@
 		C798FAF5265F415D00EC2936 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C798FAF4265F415D00EC2936 /* ContentView.swift */; };
 		C798FAF7265F415F00EC2936 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C798FAF6265F415F00EC2936 /* Assets.xcassets */; };
 		C798FAFA265F415F00EC2936 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C798FAF9265F415F00EC2936 /* Preview Assets.xcassets */; };
+		C798FB04265F430A00EC2936 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C798FB03265F430A00EC2936 /* GoogleService-Info.plist */; };
+		F4BCB9305C9D7CFC92BD1FDC /* Pods_berri.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA1C8322DFE7B63A591C1F5E /* Pods_berri.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B72F694094BBA96BAD5C6C16 /* Pods-berri.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-berri.debug.xcconfig"; path = "Target Support Files/Pods-berri/Pods-berri.debug.xcconfig"; sourceTree = "<group>"; };
 		C798FAEF265F415D00EC2936 /* berri.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = berri.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C798FAF2265F415D00EC2936 /* berriApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = berriApp.swift; sourceTree = "<group>"; };
 		C798FAF4265F415D00EC2936 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C798FAF6265F415F00EC2936 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C798FAF9265F415F00EC2936 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C798FAFB265F415F00EC2936 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C798FB03265F430A00EC2936 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		CA1C8322DFE7B63A591C1F5E /* Pods_berri.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_berri.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAD7BA840EB3F47A1F96E8B2 /* Pods-berri.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-berri.release.xcconfig"; path = "Target Support Files/Pods-berri/Pods-berri.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,17 +33,38 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4BCB9305C9D7CFC92BD1FDC /* Pods_berri.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4F04B3EF4942BCB0FAF5C00E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				B72F694094BBA96BAD5C6C16 /* Pods-berri.debug.xcconfig */,
+				FAD7BA840EB3F47A1F96E8B2 /* Pods-berri.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		9BA25F07DC9E21AC312D90BF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CA1C8322DFE7B63A591C1F5E /* Pods_berri.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C798FAE6265F415C00EC2936 = {
 			isa = PBXGroup;
 			children = (
 				C798FAF1265F415D00EC2936 /* berri */,
 				C798FAF0265F415D00EC2936 /* Products */,
+				4F04B3EF4942BCB0FAF5C00E /* Pods */,
+				9BA25F07DC9E21AC312D90BF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -55,6 +82,7 @@
 				C798FAF2265F415D00EC2936 /* berriApp.swift */,
 				C798FAF4265F415D00EC2936 /* ContentView.swift */,
 				C798FAF6265F415F00EC2936 /* Assets.xcassets */,
+				C798FB03265F430A00EC2936 /* GoogleService-Info.plist */,
 				C798FAFB265F415F00EC2936 /* Info.plist */,
 				C798FAF8265F415F00EC2936 /* Preview Content */,
 			);
@@ -76,9 +104,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C798FAFE265F415F00EC2936 /* Build configuration list for PBXNativeTarget "berri" */;
 			buildPhases = (
+				B7FB21D58A0EFA2220FEC56A /* [CP] Check Pods Manifest.lock */,
 				C798FAEB265F415D00EC2936 /* Sources */,
 				C798FAEC265F415D00EC2936 /* Frameworks */,
 				C798FAED265F415D00EC2936 /* Resources */,
+				3E91BB81F7354BBB46D96BFD /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -128,10 +158,53 @@
 			files = (
 				C798FAFA265F415F00EC2936 /* Preview Assets.xcassets in Resources */,
 				C798FAF7265F415F00EC2936 /* Assets.xcassets in Resources */,
+				C798FB04265F430A00EC2936 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3E91BB81F7354BBB46D96BFD /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-berri/Pods-berri-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-berri/Pods-berri-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-berri/Pods-berri-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B7FB21D58A0EFA2220FEC56A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-berri-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C798FAEB265F415D00EC2936 /* Sources */ = {
@@ -264,6 +337,7 @@
 		};
 		C798FAFF265F415F00EC2936 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B72F694094BBA96BAD5C6C16 /* Pods-berri.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -286,6 +360,7 @@
 		};
 		C798FB00265F415F00EC2936 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FAD7BA840EB3F47A1F96E8B2 /* Pods-berri.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
