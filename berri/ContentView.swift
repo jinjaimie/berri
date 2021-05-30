@@ -19,20 +19,23 @@ struct ContentView: View {
                 .tag(1)
                 
                 ZStack {
-                }.tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill") }
+                }.tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill").foregroundColor(.blue) }
                 .tag(2)
                 
                 ZStack {
-                }.tabItem { Label("Add", systemImage: "plus") }
+                }.tabItem { Label("Add", systemImage: "plus").foregroundColor(.blue) }
                 .tag(3)
                 
                 ZStack {
-                }.tabItem { Label("Settings", systemImage: "gear") }
+                }.tabItem { Label {
+                    Text("Settings")
+                        .foregroundColor(Color.white)
+                } icon: {
+                    Image(systemName: "gear")
+                        .foregroundColor(Color.white)
+                } }
                 .tag(4)
-            }.onAppear() {
-                UITabBar.appearance().backgroundColor = main
-            }
-            .accentColor(accent)
+            }.accentColor(accent)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Image("berri").background(Color.init(red: 0.937, green: 0.824, blue: 0.827))
@@ -40,10 +43,8 @@ struct ContentView: View {
             }
             .onAppear() {
                 UITabBar.appearance().barTintColor = main
-                
             }
-
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
