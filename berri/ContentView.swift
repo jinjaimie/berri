@@ -95,8 +95,7 @@ extension Expenditures {
             self.tempCategories = self.makeItems(from: snapshot)
         }
         ref.child("expenditures").observeSingleEvent(of: .value) { snapshot in
-            _ = self.createExpense(from: snapshot)
-            print(expenseList)
+            self.createExpense(from: snapshot)
         }
         
     }
@@ -114,7 +113,7 @@ extension Expenditures {
     }
     
     func createExpense(from snapshot: DataSnapshot) {
-        // var items = [Expense]()
+     
         self.expenseList = []
         if let snapshots = snapshot.children.allObjects as? [DataSnapshot] {
             for snap in snapshots {
@@ -124,7 +123,7 @@ extension Expenditures {
                 }
             }
         }
-        //           return items
+
     }
 }
 
@@ -167,6 +166,7 @@ struct ExpenseListByCategory: View {
     var body: some View {
         VStack {
             Text("Hello " + category)
+            Spacer()
             ForEach(expenses, id: \.self) { i in
                 showItem(exp: i)
             }
