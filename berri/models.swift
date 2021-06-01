@@ -50,7 +50,7 @@ import Firebase
 
 
 class Transaction: NSObject {
-    var id: String {name}
+    var id: Int
     var account: String
     var date: String
     var name: String
@@ -60,7 +60,8 @@ class Transaction: NSObject {
     var convDate: Date = Date()
     var isIncome: Bool = false
 
-    init(account: String, date: String, name: String, value: Double, category: String) {
+    init(id: Int, account: String, date: String, name: String, value: Double, category: String) {
+        self.id = id
         self.account = account
         self.date = date
         self.name = name
@@ -68,7 +69,8 @@ class Transaction: NSObject {
         self.category = category
     }
     
-    init(account: String, date: String, name: String, value: Double, incomeType: String, category: String) {
+    init(id: Int, account: String, date: String, name: String, value: Double, incomeType: String, category: String) {
+        self.id = id
         self.account = account
         self.date = date
         self.name = name

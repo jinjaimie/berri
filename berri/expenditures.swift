@@ -39,9 +39,12 @@ struct Expenditures: View {
                         ScrollView(.vertical) {
                             ForEach (isExpenseView ? tempCategories : tempIncome, id: \.self) { c in
                                 let curArr = filteredData(exp: expenseList, cat: c)
-                                 VStack {
+                                //                                if (curArr.count > 2) {
+                                //                                    curArr.sorted(by: { $0.convDate > $1.convDate })
+                                //                                }
+                                VStack {
                                     HStack {
-                                        NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: m.size.width, height: m.size.height)) {
+                                        NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: m.size.width, height: m.size.height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome)) {
                                             Spacer()
                                             ZStack {
                                                 RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.66, green: 0.66, blue: 0.66)).frame(width: m.size.width / 1.2, height: m.size.height / 9, alignment: .center)
@@ -86,10 +89,10 @@ struct Expenditures: View {
                         }} label: {
                             HStack {
                                 Spacer()
-                            HStack {
-                                Text(curView).font(.title)
-                                Image(systemName: "chevron.down")
-                            }
+                                HStack {
+                                    Text(curView).font(.title)
+                                    Image(systemName: "chevron.down")
+                                }
                                 Spacer()
                             }
                         }
@@ -131,6 +134,7 @@ struct Expenditures: View {
                 Calendar.current.isDate(date1, equalTo: date2, toGranularity: .year) ? temp.append(i) : nil
             }
         }
+        
         return temp
     }
     
@@ -143,52 +147,69 @@ struct ExpenseListByCategory: View {
     @State var expenses: [Transaction]
     @State var width: CGFloat
     @State var height: CGFloat
+    @State var tempAccounts : [String]
+    @State var tempCategories : [String]
+    @State var tempIncome : [String]
     
     var body: some View {
         VStack(spacing: 0){
             Text("Transactions for \n" + category).font(.title2).padding(30).textCase(/*@START_MENU_TOKEN@*/.uppercase/*@END_MENU_TOKEN@*/).foregroundColor(.black).multilineTextAlignment(.center)
             ForEach(expenses, id: \.self) { i in
-                showItems(exp: i, width: width, height: height)
+                showItems(exp: i, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome)
             }
             Spacer()
         }.navigationBarHidden(false)
     }
 }
 
-struct CategoryView: View {
-    @State var c: String
-    @State var curArr: [Transaction]
-    @State var width: CGFloat
-    @State var height: CGFloat
-    
-    var body: some View {
-        VStack {
-            HStack {
-                NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height)) {
-                    Spacer()
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.66, green: 0.66, blue: 0.66)).frame(width: width / 1.2, height: height / 9, alignment: .center)
-                        HStack {
-                            Text(c).foregroundColor(.black).textCase(.uppercase)
-                            Spacer()
-                            HStack {
-                                Text("$" + String(curArr.map({$0.value}).reduce(0, +))).foregroundColor(.black).fontWeight(.medium)
-                                Image(systemName: "chevron.right")
-                            }
-                        }.frame(width: width / 1.4, height: height / 9, alignment: .center)
-                    }
-                    Spacer()
-                }
-            }
-        }
-    }
-}
+//
+//struct CategoryView: View {
+//    @State var c: String
+//    @State var curArr: [Transaction]
+//    @State var width: CGFloat
+//    @State var height: CGFloat
+//    @State var tempAccounts : [String]
+//    @State var tempCategories : [String]
+//    @State var tempIncome : [String]
+//
+//    var body: some View {
+//        VStack {
+//            HStack {
+//                NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome)) {
+//                    Spacer()
+//                    ZStack {
+//                        RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.66, green: 0.66, blue: 0.66)).frame(width: width / 1.2, height: height / 9, alignment: .center)
+//                        HStack {
+//                            Text(c).foregroundColor(.black).textCase(.uppercase)
+//                            Spacer()
+//                            HStack {
+//                                Text("$" + String(curArr.map({$0.value}).reduce(0, +))).foregroundColor(.black).fontWeight(.medium)
+//                                Image(systemName: "chevron.right")
+//                            }
+//                        }.frame(width: width / 1.4, height: height / 9, alignment: .center)
+//                    }
+//                    Spacer()
+//                }
+//            }
+//        }
+//    }
+//}
 
 struct showItems: View {
     @State var exp: Transaction
     @State var clicked: Bool = false
+    @State var editChoice: Bool = false
     @State var width: CGFloat
     @State var height: CGFloat
+    @State var tempAccounts : [String]
+    @State var tempCategories : [String]
+    @State var tempIncome : [String]
+    
+    static let itemDateFormat: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM/dd/yyyy"
+        return formatter
+    }()
     
     var body: some View {
         ZStack {
@@ -200,43 +221,79 @@ struct showItems: View {
                     Spacer()
                     Text("$" + String(exp.value)).foregroundColor(.black)
                     Image(systemName: "chevron.right")
-                }.popover(isPresented: $clicked) {
-                    VStack(spacing: 10) {
+                }}.frame(width: width / 1.2, height: height / 9, alignment: .center)
+            
+        }.popover(isPresented: $clicked) {
+            NavigationView {
+                VStack(spacing: 10) {
+                    Spacer()
+                    HStack {
+                        Text("Details for: ").font(.title)
+                        TextField(exp.name, text: $exp.name).font(.title).border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/).padding(5)
+                    }.multilineTextAlignment(.center)
+                    Spacer()
+                    HStack {
+                        Text("Date of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                         Spacer()
-                        HStack {
-                            Text("Details for: ").font(.title)
-                            Text(exp.name).font(.title).underline()
-                        }.multilineTextAlignment(.center)
+                        DatePicker(selection: $exp.convDate, in: ...Date(), displayedComponents: .date) {
+                        }
+                    }.frame(width: width/1.2)
+                    HStack {
+                        Text("Value of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                         Spacer()
-                        HStack {
-                            Text("Date of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                            Spacer()
-                            Text(exp.date).underline()
-                        }.frame(width: width/1.2)
-                        HStack {
-                            Text("Value of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                            Spacer()
-                            Text(String(exp.value)).underline()
-                        }.frame(width: width/1.2)
-                        HStack {
-                            Text("Account of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                            Spacer()
-                            Text(exp.account).underline()
-                        }.frame(width: width/1.2)
-                        HStack {
-                            Text("Category of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                            Spacer()
-                            Text(exp.category).underline()
-                        }.frame(width: width/1.2)
-                        exp.isIncome ? HStack {
-                            Text("Income Type of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                            Spacer()
-                            Text(exp.incomeType).underline()
-                        }.frame(width: width/1.2) : nil
+                        TextField(String(exp.value), value: $exp.value, formatter: NumberFormatter()).border(Color.black).padding(5)
+                    }.frame(width: width/1.2)
+                    HStack {
+                        Text("Account of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                         Spacer()
+                        Button(action: {
+                        }) {
+                            Picker(exp.account, selection: $exp.account) {
+                                ForEach(tempAccounts, id: \.self) {
+                                    Text($0)
+                                }
+                            }.onReceive([self.exp.account].publisher.first()) { _ in
+                                clicked = false
+                                clicked = true
+                        }.pickerStyle(MenuPickerStyle()).frame(minWidth: 0, maxWidth: width / 2)
+                           // Text(exp.account)
+                        }
+                    }.frame(width: width/1.2)
+                    HStack {
+                        Text("Category of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                        Spacer()
+                        Picker(exp.category, selection: $exp.category) {
+                            exp.category == "" ? Text(exp.category) : nil
+                            ForEach(tempCategories, id: \.self) {
+                                Text($0)
+                            }
+                        }.pickerStyle(MenuPickerStyle()).frame(minWidth: 0, maxWidth: width / 2)
+                    }.frame(width: width/1.2)
+                    exp.isIncome ? HStack {
+                        Text("Income Type of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                        Spacer()
+                        Picker(exp.incomeType, selection: $exp.incomeType) {
+                            exp.incomeType == "" ? Text(exp.incomeType) : nil
+                            ForEach(tempIncome, id: \.self) {
+                                Text($0)
+                            }
+                        }.pickerStyle(MenuPickerStyle()).frame(minWidth: 0, maxWidth: width / 2)
+                    }.frame(width: width/1.2) : nil
+                    Spacer()
+                    Button(action: {
+                        let ref = Database.database().reference()
+                        exp.date = showItems.itemDateFormat.string(from: exp.convDate)
+                        exp.isIncome ?
+                            ref.child("income").child(String(exp.id)).setValue(["account": exp.account, "category": exp.category, "date": exp.date , "incomeType": exp.incomeType, "name": exp.name, "value": Double(exp.value)]) :  ref.child("expenditures").child(String(exp.id)).setValue(["account": exp.account, "category": exp.category, "date": exp.date, "name": exp.name, "value": Double(exp.value)])
+                        self.clicked.toggle()
+                    }) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.33, green: 0.50, blue: 0.43)).frame(width: width / 1.5, height: height / 7, alignment: .center)
+                            Text("Submit")
+                        }
                     }
                 }
-            }.frame(width: width / 1.2, height: height / 9, alignment: .center)
-        }
+            }
+        }.frame(width: width / 1.2, height: height / 9, alignment: .center)
     }
 }

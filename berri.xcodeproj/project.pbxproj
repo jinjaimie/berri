@@ -15,6 +15,7 @@
 		DB8645A526633562005625F7 /* expenditures.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8645A426633562005625F7 /* expenditures.swift */; };
 		DB8645A926634024005625F7 /* models.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8645A826634024005625F7 /* models.swift */; };
 		DB8645AB26658927005625F7 /* total.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8645AA26658927005625F7 /* total.swift */; };
+		DB8645AD2665B3F0005625F7 /* write.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8645AC2665B3F0005625F7 /* write.swift */; };
 		F4BCB9305C9D7CFC92BD1FDC /* Pods_berri.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA1C8322DFE7B63A591C1F5E /* Pods_berri.framework */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,7 @@
 		DB8645A426633562005625F7 /* expenditures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = expenditures.swift; sourceTree = "<group>"; };
 		DB8645A826634024005625F7 /* models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = models.swift; sourceTree = "<group>"; };
 		DB8645AA26658927005625F7 /* total.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = total.swift; sourceTree = "<group>"; };
+		DB8645AC2665B3F0005625F7 /* write.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = write.swift; sourceTree = "<group>"; };
 		FAD7BA840EB3F47A1F96E8B2 /* Pods-berri.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-berri.release.xcconfig"; path = "Target Support Files/Pods-berri/Pods-berri.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -88,6 +90,7 @@
 				C798FAF4265F415D00EC2936 /* ContentView.swift */,
 				DB8645AA26658927005625F7 /* total.swift */,
 				DB8645A426633562005625F7 /* expenditures.swift */,
+				DB8645AC2665B3F0005625F7 /* write.swift */,
 				C798FAF6265F415F00EC2936 /* Assets.xcassets */,
 				C798FB03265F430A00EC2936 /* GoogleService-Info.plist */,
 				C798FAFB265F415F00EC2936 /* Info.plist */,
@@ -220,6 +223,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C798FAF5265F415D00EC2936 /* ContentView.swift in Sources */,
+				DB8645AD2665B3F0005625F7 /* write.swift in Sources */,
 				C798FAF3265F415D00EC2936 /* berriApp.swift in Sources */,
 				DB8645A526633562005625F7 /* expenditures.swift in Sources */,
 				DB8645A926634024005625F7 /* models.swift in Sources */,

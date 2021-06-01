@@ -18,7 +18,7 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            Text("Hello, world!")
+            WriteTest()
                 .padding().tabItem {
                     Image(systemName: "hand.thumbsup.fill")
                     Text("Home")
@@ -72,13 +72,15 @@ extension ContentView {
     func createTransactions(from snapshot: DataSnapshot, isIncome: Bool) -> [Transaction]  {
         var tempList = [Transaction]()
         if let snapshots = snapshot.children.allObjects as? [DataSnapshot] {
+            print(snapshots.count)
             for snap in snapshots {
                 if let postDictionary = snap.value as? Dictionary<String, AnyObject> {
-                    let item = Transaction(account: postDictionary["account"] as! String, date: postDictionary["date"] as! String, name: postDictionary["name"] as! String, value: postDictionary["value"] as! Double, category: postDictionary["category"] as! String)
+                    let item = Transaction(id: Int(snap.key)!, account: postDictionary["account"] as! String, date: postDictionary["date"] as! String, name: postDictionary["name"] as! String, value: postDictionary["value"] as! Double, category: postDictionary["category"] as! String)
                     
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "MM/dd/yyyy"
                     item.convDate = dateFormatter.date(from: item.date)!
+                    // print(item.convDate, " ::: ", item.date)
                     if (isIncome) {
                         item.isIncome = true
                         item.incomeType = postDictionary["incomeType"] as! String
