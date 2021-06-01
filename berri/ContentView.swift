@@ -19,21 +19,15 @@ struct ContentView: View {
                 .tag(1)
                 
                 ZStack {
-                }.tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill").foregroundColor(.blue) }
+                }.tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill").foregroundColor(.white) }
                 .tag(2)
                 
                 ZStack {
-                }.tabItem { Label("Add", systemImage: "plus").foregroundColor(.blue) }
+                }.tabItem { Label("Add", systemImage: "plus").foregroundColor(.white) }
                 .tag(3)
                 
                 ZStack {
-                }.tabItem { Label {
-                    Text("Settings")
-                        .foregroundColor(Color.white)
-                } icon: {
-                    Image(systemName: "gear")
-                        .foregroundColor(Color.white)
-                } }
+                }.tabItem { Label("Settings", systemImage: "gear") }
                 .tag(4)
             }.accentColor(accent)
             .toolbar {
