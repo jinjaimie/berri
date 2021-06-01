@@ -29,7 +29,7 @@ struct AccountForm: View {
                         Spacer()
                     }
                     HStack {
-                        TextField("Enter Initial Amount", text: $amount).padding().border(Color.gray).cornerRadius(8.0)
+                        TextField("Enter Initial Balance", text: $amount).padding().border(Color.gray).cornerRadius(8.0)
                         Spacer()
                     }
                     Spacer()
@@ -110,16 +110,21 @@ struct CategoryForm: View {
                         Button(action: {
                             self.ref.child("addCategory/categories/").getData { (error, snapshot) in
                                 var array:[String] = []
+                                var found = false
                                 for child in snapshot.children {
                                     let snap = child as! DataSnapshot
                                     let val = snap.value as! String
                                     if (val == name) {
                                         showAlert = true
+                                        found = true
+                                    } else {
+                                        array.append(val)
                                     }
-                                    array.append(val)
                                 }
-                                array.append(name)
-                                self.ref.child("addCategory").setValue(["categories": array])
+                                if (found == false) {
+                                    array.append(name)
+                                    self.ref.child("addCategory").setValue(["categories": array])
+                                }
                             }
                         }, label: {
                             Text("Save")
