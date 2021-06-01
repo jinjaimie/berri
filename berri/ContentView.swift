@@ -27,12 +27,13 @@ struct ContentView: View {
                 .tag(3)
                 
                 ZStack {
+                    SettingView().tag(1)
                 }.tabItem { Label("Settings", systemImage: "gear") }
                 .tag(4)
             }.accentColor(accent)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Image("berri").background(Color.init(red: 0.937, green: 0.824, blue: 0.827))
+                    Image("berri")
                 }
             }
             .onAppear() {
@@ -42,8 +43,23 @@ struct ContentView: View {
     }
 }
 
+struct SettingView: View {
+    var body: some View {
+        VStack (spacing: 5) {
+            NavigationLink(
+                destination: AccountForm()) {
+                    Text("Add an account").padding()
+            }
+            NavigationLink(
+                destination: CategoryForm()) {
+                Text("Add a category").padding()
+            }
+        }
+    }
+}
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        SettingView()
     }
 }
