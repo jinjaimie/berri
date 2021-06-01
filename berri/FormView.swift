@@ -39,7 +39,6 @@ struct AccountForm: View {
                             if snapshot.exists() {
                                 showAlert = true
                                 alertType = "existingAcct"
-                                print(name)
                             } else if (initial == nil) {
                                 showAlert = true
                                 alertType = "invalidAmount"
@@ -87,8 +86,57 @@ struct AccountForm: View {
 }
 
 struct CategoryForm: View {
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @State var name:String = ""
+    @State var showAlert = false
+    @State var ref: DatabaseReference! = Database.database().reference()
+    
     var body: some View {
-        Text("Hello world")
+        GeometryReader { geom in
+            VStack (spacing: 30) {
+                HStack {
+                    Text("New category").font(.largeTitle).fontWeight(.bold)
+                    Spacer()
+                }.padding(.bottom, geom.size.height*0.02)
+                HStack {
+                    TextField("Enter Category", text: $name).padding().border(Color.gray).cornerRadius(8.0)
+                    Spacer()
+                }
+                Spacer()
+                HStack {
+                    Button(action: {
+                        self.ref.child("addCategory/categories/").getData { (error, snapshot) in
+                            var array:[String] = []
+                            for child in snapshot.children {
+                                let snap = child as! DataSnapshot
+                                let val = snap.value as! String
+                                if (val == name) {
+                                    showAlert = true
+                                }
+                                array.append(val)
+                            }
+                            array.append(name)
+                            self.ref.child("addCategory").setValue(["categories": array])
+                        }
+                    }, label: {
+                        Text("Save")
+                    }).disabled(name.isEmpty)
+                    .alert(isPresented: $showAlert) {
+                        Alert(
+                            title: Text("Error"),
+                            message: Text("This category already exists"),
+                            dismissButton: .default(Text("Okay"))
+                        )
+                    }
+                    .padding(.horizontal, geom.size.width*0.1).font(.custom("button", size: 17))
+                    Button(action: {
+                            self.presentationMode.wrappedValue.dismiss()
+                    }, label: {
+                        Text("Cancel")
+                    }).foregroundColor(.secondary).padding(.horizontal, geom.size.width*0.1).font(.custom("button", size: 17))
+                }
+            }.padding(geom.size.width*0.1)
+        }
     }
 }
 
