@@ -29,7 +29,7 @@ struct AccountForm: View {
                         Spacer()
                     }
                     HStack {
-                        TextField("Enter Initial Balance", text: $amount).padding().border(Color.gray).cornerRadius(8.0)
+                        TextField("Enter Balance", text: $amount).padding().border(Color.gray).cornerRadius(8.0)
                         Spacer()
                     }
                     Spacer()
