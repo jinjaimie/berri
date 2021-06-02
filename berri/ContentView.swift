@@ -12,37 +12,40 @@ struct ContentView: View {
     
     let main:UIColor = UIColor(red: 0.937, green: 0.824, blue: 0.827, alpha: 1)
     let accent:Color = Color(red: 0.64, green: 0.36, blue: 0.25)
-    @State var tempAccounts = [String]()
-    @State var tempCategories = [String]()
-    @State var expenseList = [Transaction]()
-    @State var incomeList = [Transaction]()
-    @State var reconList = [Transaction]()
-    @State var tempIncome = [String]()
     
+    @StateObject var firebaseHandler = FirebaseHandler()
+
+
     var body: some View {
         GeometryReader { m in
         NavigationView {
             TabView {
                 ZStack {
-                    
+                    AccountView(handler: firebaseHandler)
                 }.tabItem { Label("Account", systemImage: "person.fill") }
                 .tag(1)
                 
                 ZStack {
+
                     Expenditures(tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, expenseList: expenseList, expenses: expenseList, reconList: reconList, incomeList: incomeList, width: m.size.width, height: m.size.height)
+     //               Expenditures(tempAccounts: Array(firebaseHandler.tempAccounts.keys), tempCategories: firebaseHandler.tempCategories, tempIncome: firebaseHandler.tempIncome, expenseList: firebaseHandler.expenseList, expenses: firebaseHandler.expenseList, reconList: firebaseHandler.reconList, incomeList: firebaseHandler.incomeList)
+
                 }.tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill").foregroundColor(.white) }
                 .tag(2)
                 
                 ZStack {
+
                     ConfirmAccount(width: m.size.width, height: m.size.height, accounts: tempAccounts, categories: tempCategories, incomes: tempIncome)
                 }.tabItem {
                     Label("Add", systemImage: "plus").foregroundColor(.black)
                 }.tag(3)
+
+                 
                 ZStack {
                     SettingView()
                 }.tabItem { Label("Settings", systemImage: "gear") }
                 .tag(4)
-            }.accentColor(accent).onAppear(perform: loadData)
+            }.accentColor(accent).onAppear(perform: firebaseHandler.loadData)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Image("berri")
@@ -71,9 +74,20 @@ struct SettingView: View {
     }
     
 }
-extension ContentView {
+
+class FirebaseHandler: ObservableObject {
+    @Published var tempAccounts = Dictionary<String, Double>()
+    @Published var tempCategories = [String]()
+    @Published var expenseList = [Transaction]()
+    @Published var incomeList = [Transaction]()
+    @Published var reconList = [Transaction]()
+    @Published var tempIncome = [String]()
+    
     func loadData() {
         let ref = Database.database().reference()
+//         ref.child("accounts").observeSingleEvent(of: .value) { snapshot in
+//             self.tempAccounts = self.makeAccounts(from: snapshot)
+//         }
         ref.child("categories").observeSingleEvent(of: .value) { snapshot in
             self.tempCategories = self.makeItems(from: snapshot)
         }
@@ -88,16 +102,14 @@ extension ContentView {
             let temp = self.createTransactions(from: snapshot, isIncome: true)
             self.incomeList = temp
         }
-        
+
         ref.child("accounts").observeSingleEvent(of: .value) { snapshot in
-            let temp = self.createAccount(from: snapshot)
+            let temp = self.makeAccounts(from: snapshot)
             var temp2 = [String]()
             for i in temp.keys {
                 temp2.append(String(i))
             }
             self.tempAccounts = temp2
-          //  print(tempAccounts)
-           // print(tempAccounts[0])
         }
     }
     
@@ -113,16 +125,18 @@ extension ContentView {
         return items
     }
     
-    func createAccount(from snapshot: DataSnapshot) -> Dictionary<String, Double> {
-        var items = Dictionary<String, Double>()
+    func makeAccounts(from snapshot: DataSnapshot) -> Dictionary<String, Double> {
+        var accounts = Dictionary<String, Double>()
         if let snapshots = snapshot.children.allObjects as? [DataSnapshot] {
             for snap in snapshots {
                 if let postDictionary = snap.value as? Dictionary<String, AnyObject> {
                     items[snap.key] = postDictionary["amount"] as? Double
+                if let account = snap.value as? NSDictionary {
+                    accounts[snap.key] = account["amount"] as? Double
                 }
             }
         }
-        return items
+        return accounts
     }
     
     func createTransactions(from snapshot: DataSnapshot, isIncome: Bool) -> [Transaction]  {
