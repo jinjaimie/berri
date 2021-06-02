@@ -42,7 +42,7 @@ struct ContentView: View {
                     SettingView()
                 }.tabItem { Label("Settings", systemImage: "gear") }
                 .tag(4)
-            }.accentColor(accent)
+            }.accentColor(accent).onAppear(perform: loadData)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Image("berri")
