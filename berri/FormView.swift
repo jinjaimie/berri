@@ -36,7 +36,7 @@ struct AccountForm: View {
                     HStack {
                         Button(action: {
                             let initial = Double(amount)
-                            self.ref.child("addAccount/\(name)/").getData { (error, snapshot) in
+                            self.ref.child("accounts/\(name)/").getData { (error, snapshot) in
                                 if snapshot.exists() {
                                     showAlert = true
                                     alertType = "existingAcct"
@@ -44,7 +44,16 @@ struct AccountForm: View {
                                     showAlert = true
                                     alertType = "invalidAmount"
                                 } else if (error == nil) {
-                                    self.ref.child("addAccount").child(name).setValue(["amount": initial])
+                                    self.ref.child("accounts").child(name).setValue(["amount": initial]) { (err, ref) in
+                                        if let err {
+                                            showAlert = true
+                                            alertType = "error"
+                                        } else {
+                                            self.presentationMode.wrappedValue.dismiss()
+                                        }
+                                    }
+                                    
+                                    
                                 } else {
                                     print("Error")
                                 }
