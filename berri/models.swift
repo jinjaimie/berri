@@ -9,58 +9,18 @@ import Foundation
 import SwiftUI
 import Firebase
 
-//class Expense: NSObject  {
-//    var account: String
-//    var category: String
-//    var date: String
-//    var name: String
-//    var value: Double
-//    var convDate: Date = Date()
-//    var isIncome: Bool = false
-//
-//    init(account: String, category: String, date: String, name: String, value: Double) {
-//        self.account = account
-//        self.category = category
-//        self.date = date
-//        self.name = name
-//        self.value = value
-//    }
-//
-//}
-//
-//struct Income: Identifiable, Decodable {
-//    var id: String {name}
-//    var account: String
-//    var date: String
-//    var name: String
-//    var value: Double
-//    var incomeType: String
-//    var category: String
-//    var convDate: Date = Date()
-//
-//    init(account: String, date: String, name: String, value: Double, incomeType: String, category: String) {
-//        self.account = account
-//        self.date = date
-//        self.name = name
-//        self.value = value
-//        self.incomeType = incomeType
-//        self.category = category
-//    }
-//}
+class Transaction: NSObject, ObservableObject {
+    @Published var id: String
+    @Published var account: String
+    @Published var date: String
+    @Published var name: String
+    @Published var value: Double
+    @Published var incomeType: String = ""
+    @Published var category: String
+    @Published var convDate: Date = Date()
+    @Published var isIncome: Bool = false
 
-
-class Transaction: NSObject {
-    var id: Int
-    var account: String
-    var date: String
-    var name: String
-    var value: Double
-    var incomeType: String = ""
-    var category: String
-    var convDate: Date = Date()
-    var isIncome: Bool = false
-
-    init(id: Int, account: String, date: String, name: String, value: Double, category: String) {
+    init(id: String, account: String, date: String, name: String, value: Double, category: String) {
         self.id = id
         self.account = account
         self.date = date
@@ -69,7 +29,7 @@ class Transaction: NSObject {
         self.category = category
     }
     
-    init(id: Int, account: String, date: String, name: String, value: Double, incomeType: String, category: String) {
+    init(id: String, account: String, date: String, name: String, value: Double, incomeType: String, category: String) {
         self.id = id
         self.account = account
         self.date = date
@@ -78,4 +38,15 @@ class Transaction: NSObject {
         self.incomeType = incomeType
         self.category = category
     }
+}
+
+class NewTransaction: ObservableObject {
+    @Published var accountOut: String = ""
+    @Published var accountIn: String = ""
+    @Published var date: String = ""
+    @Published var name: String = ""
+    @Published var value: Double = 0.0
+    @Published var incomeType: String = ""
+    @Published var category: String = ""
+    @Published var convDate: Date = Date()
 }

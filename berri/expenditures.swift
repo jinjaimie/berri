@@ -14,11 +14,13 @@ struct Expenditures: View {
     @State var curView = "Expenditures"
     @State var incomeList : [Transaction]
     @State var isExpenseView: Bool = true
+    @State var width: CGFloat
+    @State var height: CGFloat
     
-    let times = ["DAY", "WEEK", "MONTH", "YEAR"]
+    let times = ["DAY", "WEEK", "MONTH", "YEAR", "TOTAL"]
     
     var body: some View {
-        GeometryReader { m in
+//        GeometryReader { m in
             NavigationView {
                 VStack(spacing: 10) {
                     HStack {
@@ -30,7 +32,7 @@ struct Expenditures: View {
                     }
                     VStack(spacing: 5) {
                         ZStack {
-                            RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.99, green: 0.66, blue: 0.66)).frame(width: m.size.width / 1.2, height: (m.size.height / CGFloat(10)) * 2, alignment: .center)
+                            RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.99, green: 0.66, blue: 0.66)).frame(width: width / 1.2, height: (height / CGFloat(10)) * 2, alignment: .center)
                             VStack {
                                 Text((isExpenseView ? ("Spent") : ( "Earned")) + " this " + timeFilter).font(.title3).foregroundColor(.black).textCase(.uppercase)
                                 Text("$" + String(filteredData(exp: expenseList) .map({$0.value}).reduce(0, +))).foregroundColor(.black).font(.largeTitle).fontWeight(.heavy)
@@ -44,24 +46,25 @@ struct Expenditures: View {
                                 //                                }
                                 VStack {
                                     HStack {
-                                        NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: m.size.width, height: m.size.height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome)) {
+                                        NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome)) {
                                             Spacer()
                                             ZStack {
-                                                RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.66, green: 0.66, blue: 0.66)).frame(width: m.size.width / 1.2, height: m.size.height / 9, alignment: .center)
+                                                RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.66, green: 0.66, blue: 0.66)).frame(width: width / 1.2, height: height / 9, alignment: .center)
                                                 HStack {
                                                     Text(c).foregroundColor(.black).textCase(.uppercase)
                                                     Spacer()
                                                     HStack {
-                                                        Text("$" + String(curArr.map({$0.value}).reduce(0, +))).foregroundColor(.black).fontWeight(.medium)
+                                                        Text("$" +
+                                                             String(format: "%.2f", curArr.map({$0.value}).reduce(0, +))).foregroundColor(.black).fontWeight(.medium)
                                                         Image(systemName: "chevron.right")
                                                     }
-                                                }.frame(width: m.size.width / 1.4, height: m.size.height / 9, alignment: .center)
+                                                }.frame(width: width / 1.4, height: height / 9, alignment: .center)
                                             }
                                             Spacer()
                                         }
                                     }
                                 }
-                            }.frame(height: m.size.height, alignment: .topLeading)
+                            }.frame(height: height, alignment: .topLeading)
                         }
                     }
                 }.navigationBarItems(leading: {
@@ -97,8 +100,8 @@ struct Expenditures: View {
                             }
                         }
                 }())
-            }.navigationViewStyle(StackNavigationViewStyle())
-        }
+            }.navigationViewStyle(DoubleColumnNavigationViewStyle())
+     //   }
         
     }
     
@@ -133,9 +136,12 @@ struct Expenditures: View {
                 let date2 = i.convDate
                 Calendar.current.isDate(date1, equalTo: date2, toGranularity: .year) ? temp.append(i) : nil
             }
+        } else {
+            temp = initial
         }
         
-        return temp
+        return temp.sorted{$0.convDate > $1.convDate}
+
     }
     
 }
@@ -162,41 +168,8 @@ struct ExpenseListByCategory: View {
     }
 }
 
-//
-//struct CategoryView: View {
-//    @State var c: String
-//    @State var curArr: [Transaction]
-//    @State var width: CGFloat
-//    @State var height: CGFloat
-//    @State var tempAccounts : [String]
-//    @State var tempCategories : [String]
-//    @State var tempIncome : [String]
-//
-//    var body: some View {
-//        VStack {
-//            HStack {
-//                NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome)) {
-//                    Spacer()
-//                    ZStack {
-//                        RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.66, green: 0.66, blue: 0.66)).frame(width: width / 1.2, height: height / 9, alignment: .center)
-//                        HStack {
-//                            Text(c).foregroundColor(.black).textCase(.uppercase)
-//                            Spacer()
-//                            HStack {
-//                                Text("$" + String(curArr.map({$0.value}).reduce(0, +))).foregroundColor(.black).fontWeight(.medium)
-//                                Image(systemName: "chevron.right")
-//                            }
-//                        }.frame(width: width / 1.4, height: height / 9, alignment: .center)
-//                    }
-//                    Spacer()
-//                }
-//            }
-//        }
-//    }
-//}
-
 struct showItems: View {
-    @State var exp: Transaction
+    @ObservedObject var exp: Transaction
     @State var clicked: Bool = false
     @State var editChoice: Bool = false
     @State var width: CGFloat
@@ -219,7 +192,7 @@ struct showItems: View {
                 Button(action: {self.clicked.toggle()}) {
                     Text(exp.name).foregroundColor(.black)
                     Spacer()
-                    Text("$" + String(exp.value)).foregroundColor(.black)
+                    Text("$" + String(format: "%.2f", abs(exp.value))).foregroundColor(.black)
                     Image(systemName: "chevron.right")
                 }}.frame(width: width / 1.2, height: height / 9, alignment: .center)
             
@@ -230,7 +203,7 @@ struct showItems: View {
                     HStack {
                         Text("Details for: ").font(.title)
                         TextField(exp.name, text: $exp.name).font(.title).border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/).padding(5)
-                    }.multilineTextAlignment(.center)
+                    }.multilineTextAlignment(.center).frame(width: width / 1.2)
                     Spacer()
                     HStack {
                         Text("Date of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
@@ -246,18 +219,12 @@ struct showItems: View {
                     HStack {
                         Text("Account of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                         Spacer()
-                        Button(action: {
-                        }) {
                             Picker(exp.account, selection: $exp.account) {
                                 ForEach(tempAccounts, id: \.self) {
                                     Text($0)
                                 }
-                            }.onReceive([self.exp.account].publisher.first()) { _ in
-                                clicked = false
-                                clicked = true
                         }.pickerStyle(MenuPickerStyle()).frame(minWidth: 0, maxWidth: width / 2)
-                           // Text(exp.account)
-                        }
+                        
                     }.frame(width: width/1.2)
                     HStack {
                         Text("Category of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
@@ -277,14 +244,14 @@ struct showItems: View {
                             ForEach(tempIncome, id: \.self) {
                                 Text($0)
                             }
-                        }.pickerStyle(MenuPickerStyle()).frame(minWidth: 0, maxWidth: width / 2)
+                        }.pickerStyle(MenuPickerStyle())
                     }.frame(width: width/1.2) : nil
                     Spacer()
                     Button(action: {
                         let ref = Database.database().reference()
                         exp.date = showItems.itemDateFormat.string(from: exp.convDate)
                         exp.isIncome ?
-                            ref.child("income").child(String(exp.id)).setValue(["account": exp.account, "category": exp.category, "date": exp.date , "incomeType": exp.incomeType, "name": exp.name, "value": Double(exp.value)]) :  ref.child("expenditures").child(String(exp.id)).setValue(["account": exp.account, "category": exp.category, "date": exp.date, "name": exp.name, "value": Double(exp.value)])
+                            ref.child("income").child(exp.id).setValue(["account": exp.account, "category": exp.category, "date": exp.date , "incomeType": exp.incomeType, "name": exp.name, "value": Double(abs(exp.value))]) :  ref.child("expenditures").child(exp.id).setValue(["account": exp.account, "category": exp.category, "date": exp.date, "name": exp.name, "value": Double(exp.value)])
                         self.clicked.toggle()
                     }) {
                         ZStack {
