@@ -18,8 +18,8 @@ struct AddMoney: View {
         GeometryReader { m in
             NavigationView {
                 VStack {
-                    Text("Choose category: ")
-                    Picker(selection: $selector, label: Text("Category"), content: {
+                    Text("Choose a transaction type: ")
+                    Picker(selection: $selector, label: Text("Types"), content: {
                         Text("Expense").tag(1)
                         Text("Income").tag(2)
                         Text("Transfer").tag(3)
@@ -44,12 +44,21 @@ struct ConfirmAccount: View {
     var categories: [String]
     @State var expIn = Transaction
     @State var expOut = Transaction
+    @State var category = String
     var body: some View {
+        Text("The transaction category:")
+        Picker(category, selection: $category) {
+            category == "" ? Text(category) : nil
+            ForEach(categories, id: \.self) {
+                Text($0)
+            }
+        }.frame(width: width/2, height: height/9).pickerStyle(MenuPickerStyle())
+        Spacer()
         if (moneyType != 2) {
             Text("Account to pull from:")
-            Picker(expIn.category, selection: $expIn.category) {
-                expIn.category == "" ? Text(expIn.category) : nil
-                ForEach(categories, id: \.self) {
+            Picker(expIn.account, selection: $expIn.account) {
+                expIn.account == "" ? Text(expIn.account) : nil
+                ForEach(accounts, id: \.self) {
                     Text($0)
                 }
             }.frame(width: width/2, height: height/9).pickerStyle(MenuPickerStyle())
@@ -59,6 +68,12 @@ struct ConfirmAccount: View {
         }
         if (moneyType != 1) {
             Text("Account to add to:")
+            Picker(expOut.account, selection: $expOut.account) {
+                expOut.account == "" ? Text(expOut.account) : nil
+                ForEach(accounts, id: \.self) {
+                    Text($0)
+                }
+            }.frame(width: width/2, height: height/9).pickerStyle(MenuPickerStyle())
         }
         Spacer()
         Text("Amount of money:")
@@ -66,7 +81,9 @@ struct ConfirmAccount: View {
                     .font(.largeTitle)
                     .multilineTextAlignment(TextAlignment.center)
         Spacer()
-        Button(action:{}, label: {
+        Button(action:{
+            print(value)
+        }, label: {
             Text("Confirm")
         })
     }
