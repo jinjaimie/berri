@@ -9,6 +9,9 @@ import SwiftUI
 import Firebase
 
 struct ContentView: View {
+
+    let main:UIColor = UIColor(red: 0.937, green: 0.824, blue: 0.827, alpha: 1)
+    let accent:Color = Color(red: 0.64, green: 0.36, blue: 0.25)
     @State var tempAccounts = [String]()
     @State var tempCategories = [String]()
     @State var expenseList = [Transaction]()
@@ -16,24 +19,54 @@ struct ContentView: View {
     @State var reconList = [Transaction]()
     @State var tempIncome = [String]()
     
+
     var body: some View {
-        TabView {
-            AddMoney(accounts: tempAccounts, categories: tempCategories)
-                .padding().tabItem {
-                    Image(systemName: "hand.thumbsup.fill")
-                    Text("Home")
-                }.tag(2)
-            
-//            Expenditures(tempAccounts: tempAccounts, tempCategories: tempCategories, expenseList: expenseList).tabItem {
-//                Image(systemName: "hand.thumbsup.fill")
-//                Text("Good")
-//            }.tag(2)
-            Expenditures(tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, expenseList: expenseList, expenses: expenseList, reconList: reconList, incomeList: incomeList).tabItem {
-                Image(systemName: "hand.thumbsup.fill")
-            }.tag(1)
-        }.onAppear(perform: loadData)
+        NavigationView {
+            TabView {
+                ZStack {
+                  
+                }.tabItem { Label("Account", systemImage: "person.fill") }
+                .tag(1)
+                
+                ZStack {
+                  Expenditures(tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, expenseList: expenseList, expenses: expenseList, reconList: reconList, incomeList: incomeList)
+                }.tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill").foregroundColor(.white) }
+                .tag(2)
+                
+                ZStack {
+                  AddMoney(accounts: tempAccounts, categories: tempCategories)
+                }.tabItem { Label("Add", systemImage: "plus").foregroundColor(.white) }
+                .tag(3)
+                
+                ZStack {
+                    SettingView().tag(1)
+                }.tabItem { Label("Settings", systemImage: "gear") }
+                .tag(4)
+            }.accentColor(accent)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Image("berri")
+                }
+            }
+            .onAppear() {
+                UITabBar.appearance().barTintColor = main
+            }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
+
+struct SettingView: View {
+    var body: some View {
+        VStack (spacing: 5) {
+            NavigationLink(
+                destination: AccountForm()) {
+                    Text("Add an account").padding()
+            }
+            NavigationLink(
+                destination: CategoryForm()) {
+                Text("Add a category").padding()
+            }
+        }
 
 extension ContentView {
     func loadData() {
@@ -97,38 +130,10 @@ extension ContentView {
         }
         return tempList
     }
-    
-//    func createIncome(from snapshot: DataSnapshot) -> [Transaction]  {
-//        var tempList = [Transaction]()
-//        if let snapshots = snapshot.children.allObjects as? [DataSnapshot] {
-//            for snap in snapshots {
-//                if let postDictionary = snap.value as? Dictionary<String, AnyObject> {
-//                    // print(postDictionary)
-//                    var item = Transaction(account: postDictionary["account"] as! String, date: postDictionary["date"] as! String, name: postDictionary["name"] as! String, value: postDictionary["value"] as! Double, incomeType: postDictionary["incomeType"] as! String, category: postDictionary["category"] as! String)
-//                    let dateFormatter = DateFormatter()
-//                    dateFormatter.dateFormat = "MM/dd/yyyy"
-//                    item.convDate = dateFormatter.date(from: item.date)!
-//                    tempList.append(item)
-//                }
-//            }
-//        }
-//        return tempList
-//    }
-    
-//    func sortRecon() -> [Transaction] {
-//        var temp = [Transaction]()
-//        for i in self.incomeList.filter({$0.category != ""}) {
-//            var converted = Transaction(account: i.account, date: i.date, name: i.name, value: -i.value, category: i.category)
-//            converted.isIncome = true
-//            converted.convDate = i.convDate
-//            temp.append(converted)
-//        }
-//        return temp
-//    }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        SettingView()
     }
 }
