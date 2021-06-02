@@ -42,49 +42,60 @@ struct ConfirmAccount: View {
     @State var value : Double? = 0.0
     var accounts: [String]
     var categories: [String]
-    @State var expIn = Transaction
-    @State var expOut = Transaction
-    @State var category = String
+//    @State var expIn : Transaction = Transaction(id: 1234, account: "", date: "12/12/12", name: "", value: 0.0, category: "")
+//    @State var expOut = Transaction(id: 1234, account: "", date: "12/12/12", name: "", value: 0.0, category: "")
+    @State var category : String = ""
     var body: some View {
-        Text("The transaction category:")
-        Picker(category, selection: $category) {
-            category == "" ? Text(category) : nil
-            ForEach(categories, id: \.self) {
-                Text($0)
-            }
-        }.frame(width: width/2, height: height/9).pickerStyle(MenuPickerStyle())
-        Spacer()
-        if (moneyType != 2) {
-            Text("Account to pull from:")
-            Picker(expIn.account, selection: $expIn.account) {
-                expIn.account == "" ? Text(expIn.account) : nil
-                ForEach(accounts, id: \.self) {
-                    Text($0)
-                }
-            }.frame(width: width/2, height: height/9).pickerStyle(MenuPickerStyle())
-        }
-        if (moneyType == 3) {
+        VStack {
+            Text("The transaction category:")
+            
+//            Picker(category, selection: $category) {
+//                category == "" ? Text(category) : nil
+//                ForEach(categories, id: \.self) {
+//                    Text($0)
+//                }
+//            }.frame(width: width/2, height: height/9).pickerStyle(MenuPickerStyle())
+            
             Spacer()
+            
+            if (moneyType != 2) {
+                Text("Account to pull from:")
+//                Picker(expIn.account, selection: $expIn.account) {
+//                    expIn.account == "" ? Text(expIn.account) : nil
+//                    ForEach(accounts, id: \.self) {
+//                        Text($0)
+//                    }
+//                }.frame(width: width/2, height: height/9).pickerStyle(MenuPickerStyle())
+            }
+            
+            if (moneyType == 3) {
+                Spacer()
+            }
+            
+            if (moneyType != 1) {
+                Text("Account to add to:")
+//                Picker(expOut.account, selection: $expOut.account) {
+//                    expOut.account == "" ? Text(expOut.account) : nil
+//                    ForEach(accounts, id: \.self) {
+//                        Text($0)
+//                    }
+//                }.frame(width: width/2, height: height/9).pickerStyle(MenuPickerStyle())
+            }
+            
+            Spacer()
+            
+            Text("Amount of money:")
+            
+            CurrencyTextField("Amount", value: self.$value, alwaysShowFractions: false, numberOfDecimalPlaces: 2, currencySymbol: "US$").font(.largeTitle).multilineTextAlignment(TextAlignment.center)
+            Spacer()
+        
+        
+            Button(action: {
+                print(value)
+            }) {
+                Text("Confirm")
+            }
+            
         }
-        if (moneyType != 1) {
-            Text("Account to add to:")
-            Picker(expOut.account, selection: $expOut.account) {
-                expOut.account == "" ? Text(expOut.account) : nil
-                ForEach(accounts, id: \.self) {
-                    Text($0)
-                }
-            }.frame(width: width/2, height: height/9).pickerStyle(MenuPickerStyle())
-        }
-        Spacer()
-        Text("Amount of money:")
-        CurrencyTextField("Amount", value: self.$value, alwaysShowFractions: false, numberOfDecimalPlaces: 2, currencySymbol: "US$")
-                    .font(.largeTitle)
-                    .multilineTextAlignment(TextAlignment.center)
-        Spacer()
-        Button(action:{
-            print(value)
-        }, label: {
-            Text("Confirm")
-        })
     }
 }

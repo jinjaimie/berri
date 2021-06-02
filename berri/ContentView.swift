@@ -18,7 +18,7 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            WriteTest()
+            AddMoney(accounts: tempAccounts, categories: tempCategories)
                 .padding().tabItem {
                     Image(systemName: "hand.thumbsup.fill")
                     Text("Home")
