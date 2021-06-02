@@ -39,7 +39,7 @@ struct ContentView: View {
                 .tag(3)
                 
                 ZStack {
-                    SettingView().tag(1)
+                    SettingView()
                 }.tabItem { Label("Settings", systemImage: "gear") }
                 .tag(4)
             }.accentColor(accent)
@@ -67,7 +67,9 @@ struct SettingView: View {
                 Text("Add a category").padding()
             }
         }
-
+    }
+    
+}
 extension ContentView {
     func loadData() {
         let ref = Database.database().reference()
