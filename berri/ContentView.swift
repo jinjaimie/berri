@@ -93,6 +93,15 @@ class FirebaseHandler: ObservableObject {
             let temp = self.createTransactions(from: snapshot, isIncome: true)
             self.incomeList = temp
         }
+        
+        ref.child("addAccount").observeSingleEvent(of: .value) { snapshot in
+            let temp = self.createAccount(from: snapshot)
+            var temp2 = [String]()
+            for i in temp.keys {
+                temp2.append(String(i))
+            }
+            self.tempAccounts = temp2
+        }
     }
     
     func makeItems(from snapshot: DataSnapshot) -> [String] {
@@ -130,7 +139,6 @@ class FirebaseHandler: ObservableObject {
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "MM/dd/yyyy"
                     item.convDate = dateFormatter.date(from: item.date)!
-                    // print(item.convDate, " ::: ", item.date)
                     if (isIncome) {
                         item.isIncome = true
                         item.incomeType = postDictionary["incomeType"] as! String
