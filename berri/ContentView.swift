@@ -27,15 +27,14 @@ struct ContentView: View {
                 
                 ZStack {
 
-                    Expenditures(tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, expenseList: expenseList, expenses: expenseList, reconList: reconList, incomeList: incomeList, width: m.size.width, height: m.size.height)
-     //               Expenditures(tempAccounts: Array(firebaseHandler.tempAccounts.keys), tempCategories: firebaseHandler.tempCategories, tempIncome: firebaseHandler.tempIncome, expenseList: firebaseHandler.expenseList, expenses: firebaseHandler.expenseList, reconList: firebaseHandler.reconList, incomeList: firebaseHandler.incomeList)
+                  //  Expenditures(tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, expenseList: expenseList, expenses: expenseList, reconList: reconList, incomeList: incomeList, width: m.size.width, height: m.size.height)
+                Expenditures(tempAccounts: Array(firebaseHandler.tempAccounts.keys), tempCategories: firebaseHandler.tempCategories, tempIncome: firebaseHandler.tempIncome, expenseList: firebaseHandler.expenseList, expenses: firebaseHandler.expenseList, reconList: firebaseHandler.reconList, incomeList: firebaseHandler.incomeList, width: m.size.width, height: m.size.height)
 
                 }.tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill").foregroundColor(.white) }
                 .tag(2)
                 
                 ZStack {
-
-                    ConfirmAccount(width: m.size.width, height: m.size.height, accounts: tempAccounts, categories: tempCategories, incomes: tempIncome)
+                    ConfirmAccount(width: m.size.width, height: m.size.height, accounts: firebaseHandler.tempAccount, categories: firebaseHandler.tempCategories, incomes: firebaseHandler.tempIncome)
                 }.tabItem {
                     Label("Add", systemImage: "plus").foregroundColor(.black)
                 }.tag(3)
@@ -77,6 +76,7 @@ struct SettingView: View {
 
 class FirebaseHandler: ObservableObject {
     @Published var tempAccounts = Dictionary<String, Double>()
+    @Published var tempAccount = [String]()
     @Published var tempCategories = [String]()
     @Published var expenseList = [Transaction]()
     @Published var incomeList = [Transaction]()
@@ -109,7 +109,8 @@ class FirebaseHandler: ObservableObject {
             for i in temp.keys {
                 temp2.append(String(i))
             }
-            self.tempAccounts = temp2
+            self.tempAccount = temp2
+            self.tempAccounts = temp
         }
     }
     
@@ -129,8 +130,8 @@ class FirebaseHandler: ObservableObject {
         var accounts = Dictionary<String, Double>()
         if let snapshots = snapshot.children.allObjects as? [DataSnapshot] {
             for snap in snapshots {
-                if let postDictionary = snap.value as? Dictionary<String, AnyObject> {
-                    items[snap.key] = postDictionary["amount"] as? Double
+//                if let postDictionary = snap.value as? Dictionary<String, AnyObject> {
+//                    items[snap.key] = postDictionary["amount"] as? Double
                 if let account = snap.value as? NSDictionary {
                     accounts[snap.key] = account["amount"] as? Double
                 }
