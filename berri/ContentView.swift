@@ -13,9 +13,14 @@ struct ContentView: View {
     let main:UIColor = UIColor(red: 0.937, green: 0.824, blue: 0.827, alpha: 1)
     let accent:Color = Color(red: 0.64, green: 0.36, blue: 0.25)
     
+    //UIScrollView.appearance().backgroundColor = UIColor.red
+    
     @StateObject var firebaseHandler = FirebaseHandler()
 
-
+    var backgroundColor: UIColor? = UIColor(red: 0.937, green: 0.824, blue: 0.827, alpha: 1)
+        var titleColor: Color = Color(red: 0.64, green: 0.36, blue: 0.25)
+    let coloredAppearance = UINavigationBarAppearance()
+   
     var body: some View {
         GeometryReader { m in
         NavigationView {
@@ -27,7 +32,6 @@ struct ContentView: View {
                 
                 ZStack {
 
-                  //  Expenditures(tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, expenseList: expenseList, expenses: expenseList, reconList: reconList, incomeList: incomeList, width: m.size.width, height: m.size.height)
                 Expenditures(tempAccounts: Array(firebaseHandler.tempAccounts.keys), tempCategories: firebaseHandler.tempCategories, tempIncome: firebaseHandler.tempIncome, expenseList: firebaseHandler.expenseList, expenses: firebaseHandler.expenseList, reconList: firebaseHandler.reconList, incomeList: firebaseHandler.incomeList, width: m.size.width, height: m.size.height)
 
                 }.tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill").foregroundColor(.white) }
@@ -53,7 +57,7 @@ struct ContentView: View {
             .onAppear() {
                 UITabBar.appearance().barTintColor = main
             }
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }.navigationViewStyle(StackNavigationViewStyle()).navigationBarHidden(false)
     }
 }
 }

@@ -18,6 +18,7 @@ struct AccountView: View {
                     Spacer()
                     ScrollView {
                         ForEach (Array(handler.tempAccounts.keys), id: \.self) { (account) in
+                            NavigationLink(destination: ExpenseListByCategory(category: account, expenses: handler.expenseList.filter({$0.account == account}), width: m.size.width, height: m.size.height, tempAccounts: handler.tempAccount, tempCategories: handler.tempCategories, tempIncome: handler.tempIncome)) {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.66, green: 0.66, blue: 0.66)).frame(width: m.size.width / 1.2, height: m.size.height / 9, alignment: .center)
                                 VStack(alignment: .center) {
@@ -27,7 +28,7 @@ struct AccountView: View {
                                     Spacer()
                                 }
                             }
-                            
+                            }
                         }
                     }.frame(height: m.size.height, alignment: .topLeading)
                     
