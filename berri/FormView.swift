@@ -117,7 +117,7 @@ struct CategoryForm: View {
                     Spacer()
                     HStack {
                         Button(action: {
-                            self.ref.child("addCategory/categories/").getData { (error, snapshot) in
+                            self.ref.child("categories/").getData { (error, snapshot) in
                                 var array:[String] = []
                                 var found = false
                                 for child in snapshot.children {
@@ -132,7 +132,9 @@ struct CategoryForm: View {
                                 }
                                 if (found == false) {
                                     array.append(name)
-                                    self.ref.child("addCategory").setValue(["categories": array])
+                                    self.ref.child("categories").setValue(array) { (err, ref) in
+                                        self.presentationMode.wrappedValue.dismiss()
+                                    }
                                 }
                             }
                         }, label: {
