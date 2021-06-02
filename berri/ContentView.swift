@@ -73,9 +73,6 @@ struct SettingView: View {
 extension ContentView {
     func loadData() {
         let ref = Database.database().reference()
-        ref.child("accounts").observeSingleEvent(of: .value) { snapshot in
-            self.tempAccounts = self.makeItems(from: snapshot)
-        }
         ref.child("categories").observeSingleEvent(of: .value) { snapshot in
             self.tempCategories = self.makeItems(from: snapshot)
         }
@@ -90,6 +87,15 @@ extension ContentView {
             let temp = self.createTransactions(from: snapshot, isIncome: true)
             self.incomeList = temp
         }
+        
+        ref.child("addAccount").observeSingleEvent(of: .value) { snapshot in
+            let temp = self.createAccount(from: snapshot)
+            var temp2 = [String]()
+            for i in temp.keys {
+                temp2.append(String(i))
+            }
+            self.tempAccounts = temp2
+        }
     }
     
     func makeItems(from snapshot: DataSnapshot) -> [String] {
@@ -98,6 +104,18 @@ extension ContentView {
             for snap in snapshots {
                 if let postDictionary = snap.value as? String {
                     items.append(postDictionary)
+                }
+            }
+        }
+        return items
+    }
+    
+    func createAccount(from snapshot: DataSnapshot) -> Dictionary<String, Double> {
+        var items = Dictionary<String, Double>()
+        if let snapshots = snapshot.children.allObjects as? [DataSnapshot] {
+            for snap in snapshots {
+                if let postDictionary = snap.value as? Dictionary<String, AnyObject> {
+                    items[snap.key] = postDictionary["amount"] as! Double
                 }
             }
         }
@@ -115,7 +133,6 @@ extension ContentView {
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "MM/dd/yyyy"
                     item.convDate = dateFormatter.date(from: item.date)!
-                    // print(item.convDate, " ::: ", item.date)
                     if (isIncome) {
                         item.isIncome = true
                         item.incomeType = postDictionary["incomeType"] as! String
