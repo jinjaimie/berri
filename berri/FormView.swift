@@ -45,7 +45,7 @@ struct AccountForm: View {
                                     alertType = "invalidAmount"
                                 } else if (error == nil) {
                                     self.ref.child("accounts").child(name).setValue(["amount": initial]) { (err, ref) in
-                                        if let err {
+                                        if err != nil {
                                             showAlert = true
                                             alertType = "error"
                                         } else {
