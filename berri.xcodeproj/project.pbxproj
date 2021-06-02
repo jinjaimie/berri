@@ -3,10 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2298BB462665D84B00BFC9D8 /* SwiftUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2298BB452665D84B00BFC9D8 /* SwiftUIKit */; };
+		2298BB492667022700BFC9D8 /* MoneyForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298BB482667022600BFC9D8 /* MoneyForm.swift */; };
 		C798FAF3265F415D00EC2936 /* berriApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C798FAF2265F415D00EC2936 /* berriApp.swift */; };
 		C798FAF5265F415D00EC2936 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C798FAF4265F415D00EC2936 /* ContentView.swift */; };
 		C798FAF7265F415F00EC2936 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C798FAF6265F415F00EC2936 /* Assets.xcassets */; };
@@ -16,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2298BB482667022600BFC9D8 /* MoneyForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyForm.swift; sourceTree = "<group>"; };
 		B72F694094BBA96BAD5C6C16 /* Pods-berri.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-berri.debug.xcconfig"; path = "Target Support Files/Pods-berri/Pods-berri.debug.xcconfig"; sourceTree = "<group>"; };
 		C798FAEF265F415D00EC2936 /* berri.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = berri.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C798FAF2265F415D00EC2936 /* berriApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = berriApp.swift; sourceTree = "<group>"; };
@@ -34,6 +37,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4BCB9305C9D7CFC92BD1FDC /* Pods_berri.framework in Frameworks */,
+				2298BB462665D84B00BFC9D8 /* SwiftUIKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,7 +50,6 @@
 				B72F694094BBA96BAD5C6C16 /* Pods-berri.debug.xcconfig */,
 				FAD7BA840EB3F47A1F96E8B2 /* Pods-berri.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -80,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				C798FAF2265F415D00EC2936 /* berriApp.swift */,
+				2298BB482667022600BFC9D8 /* MoneyForm.swift */,
 				C798FAF4265F415D00EC2936 /* ContentView.swift */,
 				C798FAF6265F415F00EC2936 /* Assets.xcassets */,
 				C798FB03265F430A00EC2936 /* GoogleService-Info.plist */,
@@ -115,6 +119,9 @@
 			dependencies = (
 			);
 			name = berri;
+			packageProductDependencies = (
+				2298BB452665D84B00BFC9D8 /* SwiftUIKit */,
+			);
 			productName = berri;
 			productReference = C798FAEF265F415D00EC2936 /* berri.app */;
 			productType = "com.apple.product-type.application";
@@ -142,6 +149,9 @@
 				Base,
 			);
 			mainGroup = C798FAE6265F415C00EC2936;
+			packageReferences = (
+				2298BB442665D84B00BFC9D8 /* XCRemoteSwiftPackageReference "SwiftUIKit" */,
+			);
 			productRefGroup = C798FAF0265F415D00EC2936 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -212,6 +222,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C798FAF5265F415D00EC2936 /* ContentView.swift in Sources */,
+				2298BB492667022700BFC9D8 /* MoneyForm.swift in Sources */,
 				C798FAF3265F415D00EC2936 /* berriApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -403,6 +414,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2298BB442665D84B00BFC9D8 /* XCRemoteSwiftPackageReference "SwiftUIKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/youjinp/SwiftUIKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.15;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2298BB452665D84B00BFC9D8 /* SwiftUIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2298BB442665D84B00BFC9D8 /* XCRemoteSwiftPackageReference "SwiftUIKit" */;
+			productName = SwiftUIKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C798FAE7265F415C00EC2936 /* Project object */;
 }
