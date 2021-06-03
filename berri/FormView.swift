@@ -36,7 +36,7 @@ struct AccountForm: View {
                     HStack {
                         Button(action: {
                             let initial = Double(amount)
-                            self.ref.child("addAccount/\(name)/").getData { (error, snapshot) in
+                            self.ref.child("accounts/\(name)/").getData { (error, snapshot) in
                                 if snapshot.exists() {
                                     showAlert = true
                                     alertType = "existingAcct"
@@ -44,7 +44,16 @@ struct AccountForm: View {
                                     showAlert = true
                                     alertType = "invalidAmount"
                                 } else if (error == nil) {
-                                    self.ref.child("addAccount").child(name).setValue(["amount": initial])
+                                    self.ref.child("accounts").child(name).setValue(["amount": initial]) { (err, ref) in
+                                        if err != nil {
+                                            showAlert = true
+                                            alertType = "error"
+                                        } else {
+                                            self.presentationMode.wrappedValue.dismiss()
+                                        }
+                                    }
+                                    
+                                    
                                 } else {
                                     print("Error")
                                 }
@@ -108,7 +117,7 @@ struct CategoryForm: View {
                     Spacer()
                     HStack {
                         Button(action: {
-                            self.ref.child("addCategory/categories/").getData { (error, snapshot) in
+                            self.ref.child("categories/").getData { (error, snapshot) in
                                 var array:[String] = []
                                 var found = false
                                 for child in snapshot.children {
@@ -123,7 +132,9 @@ struct CategoryForm: View {
                                 }
                                 if (found == false) {
                                     array.append(name)
-                                    self.ref.child("addCategory").setValue(["categories": array])
+                                    self.ref.child("categories").setValue(array) { (err, ref) in
+                                        self.presentationMode.wrappedValue.dismiss()
+                                    }
                                 }
                             }
                         }, label: {
