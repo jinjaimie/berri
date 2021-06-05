@@ -97,6 +97,17 @@ struct ConfirmAccount: View {
                             }
                         }.pickerStyle(MenuPickerStyle())
                     }.frame(width: width / 1.2)
+                    HStack {
+                        Picker(selection: $addItem.accountIn, label: HStack {
+                            Text("Account to add to: ")
+                            Spacer()
+                            addItem.accountIn == "" ? Text("Select") : Text(addItem.accountIn)
+                        }) {
+                            ForEach(accounts, id: \.self) {
+                                Text($0)
+                            }
+                        }.pickerStyle(MenuPickerStyle())
+                    }.frame(width: width / 1.2)
                 }
                 
               

@@ -129,9 +129,6 @@ struct Expenditures: View {
                 }
             }
         }
-        //    }
-        
-        
     }
     
     
