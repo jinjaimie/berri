@@ -91,8 +91,12 @@ struct SettingView: View {
                 Text("Add an account").padding()
             }
             NavigationLink(
-                destination: CategoryForm()) {
-                Text("Add a category").padding()
+                destination: CategoryForm(t: "expenseTypes")) {
+                Text("Add an expense type").padding()
+            }
+            NavigationLink(
+                destination: CategoryForm(t: "incomeTypes")) {
+                Text("Add an income type").padding()
             }
         }
     }
