@@ -17,7 +17,7 @@ struct ContentView: View {
     
     @StateObject var firebaseHandler = FirebaseHandler()
 
-    @State private var isAuthenticated = Auth.auth().currentUser != nil
+    @State private var isAuthenticated = Auth.auth().currentUser == nil
     
     var backgroundColor: UIColor? = UIColor(red: 0.937, green: 0.824, blue: 0.827, alpha: 1)
         var titleColor: Color = Color(red: 0.64, green: 0.36, blue: 0.25)
