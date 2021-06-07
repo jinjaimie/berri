@@ -219,6 +219,7 @@ struct showItems: View {
     @State var tempAccounts : [String]
     @State var tempCategories : [String]
     @State var tempIncome : [String]
+    @State var newValue : Double? = 0.0
     
     static let itemDateFormat: DateFormatter = {
         let formatter = DateFormatter()
@@ -232,7 +233,9 @@ struct showItems: View {
                             RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.6196, green: 0.3647, blue: 0.5451)).frame(width: width / 1.1, height: height / 10, alignment: .center)
 
             HStack {
-                Button(action: {self.clicked.toggle()}) {
+                Button(action: {self.clicked.toggle()
+                    newValue = exp.value
+                }) {
                     Text(exp.name).foregroundColor(.white)
                     Spacer()
                     Text("$" + String(format: "%.2f", abs(exp.value))).foregroundColor(.white)
@@ -258,7 +261,8 @@ struct showItems: View {
                     Text("Value of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     Spacer()
                   //  CurrencyTextField("Amount", value: $.value, alwaysShowFractions: false, numberOfDecimalPlaces: 2, currencySymbol: "US$").font(.largeTitle).multilineTextAlignment(TextAlignment.center)
-                    TextField(String(abs(exp.value)), value: $exp.value, formatter: NumberFormatter()).border(Color.black).padding(5)
+                    CurrencyTextField("Amount", value: self.$newValue, alwaysShowFractions: false, numberOfDecimalPlaces: 2, currencySymbol: "US$").font(.title).multilineTextAlignment(TextAlignment.center)
+//                    TextField(String(abs(newValue)), value: $newValue, formatter: NumberFormatter()).border(Color.black).padding(5)
                 }.frame(width: width/1.2)
                 HStack {
                     Text("Account of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
@@ -292,6 +296,7 @@ struct showItems: View {
                 }.frame(width: width/1.2) : nil
                 Spacer()
                 Button(action: {
+                    exp.value = newValue!
                     let ref = Database.database().reference()
                     exp.date = showItems.itemDateFormat.string(from: exp.convDate)
                     exp.isIncome ?
