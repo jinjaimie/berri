@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import Firebase
 
-class Transaction: NSObject, ObservableObject {
+class MTransaction: NSObject, ObservableObject {
     @Published var id: String
     @Published var account: String
     @Published var date: String

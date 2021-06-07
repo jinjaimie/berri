@@ -10,15 +10,16 @@ import Firebase
 
 struct ContentView: View {
     
-    let main:UIColor = UIColor(red: 0.937, green: 0.824, blue: 0.827, alpha: 1)
-    let accent:Color = Color(red: 0.64, green: 0.36, blue: 0.25)
-    
+    let main:UIColor = UIColor(Color("MainColor"))
+    let accent:UIColor = UIColor(Color("AccentColor"))
+    let extraAccent = UIColor(Color("ExtraColor"))
+    @State var navBarHidden: Bool = true
     //UIScrollView.appearance().backgroundColor = UIColor.red
     
     @StateObject var firebaseHandler = FirebaseHandler()
 
-    var backgroundColor: UIColor? = UIColor(red: 0.937, green: 0.824, blue: 0.827, alpha: 1)
-        var titleColor: Color = Color(red: 0.64, green: 0.36, blue: 0.25)
+//    var backgroundColor: UIColor? = UIColor(red: 0.937, green: 0.824, blue: 0.827, alpha: 1)
+//        var titleColor: Color = Color(red: 0.64, green: 0.36, blue: 0.25)
     let coloredAppearance = UINavigationBarAppearance()
    
     init() {
@@ -58,7 +59,7 @@ struct ContentView: View {
                     SettingView()
                 }.tabItem { Label("Settings", systemImage: "gear") }
                 .tag(4)
-            }.accentColor(accent).onAppear(perform: firebaseHandler.loadData)
+            }.accentColor(Color("ExtraColor")).onAppear(perform: firebaseHandler.loadData)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     VStack {
@@ -77,8 +78,12 @@ struct ContentView: View {
             }
             .onAppear() {
                 UITabBar.appearance().barTintColor = main
+                UITabBar.appearance().unselectedItemTintColor = accent
             }
-        }.navigationViewStyle(StackNavigationViewStyle()).navigationBarHidden(false)
+        }.navigationViewStyle(StackNavigationViewStyle())
+        .navigationBarHidden(true)
+        .navigationBarTitle(Text("Home"))
+        .edgesIgnoringSafeArea([.top, .bottom])
     }
 }
 }
@@ -103,9 +108,9 @@ class FirebaseHandler: ObservableObject {
     @Published var tempAccounts = Dictionary<String, Double>()
     @Published var tempAccount = [String]()
     @Published var tempCategories = [String]()
-    @Published var expenseList = [Transaction]()
-    @Published var incomeList = [Transaction]()
-    @Published var reconList = [Transaction]()
+    @Published var expenseList = [MTransaction]()
+    @Published var incomeList = [MTransaction]()
+    @Published var reconList = [MTransaction]()
     @Published var tempIncome = [String]()
     
     func loadData() {
@@ -165,13 +170,13 @@ class FirebaseHandler: ObservableObject {
         return accounts
     }
     
-    func createTransactions(from snapshot: DataSnapshot, isIncome: Bool) -> [Transaction]  {
-        var tempList = [Transaction]()
+    func createTransactions(from snapshot: DataSnapshot, isIncome: Bool) -> [MTransaction]  {
+        var tempList = [MTransaction]()
         if let snapshots = snapshot.children.allObjects as? [DataSnapshot] {
             print(snapshots.count)
             for snap in snapshots {
                 if let postDictionary = snap.value as? Dictionary<String, AnyObject> {
-                    let item = Transaction(id: String(snap.key), account: postDictionary["account"] as! String, date: postDictionary["date"] as! String, name: postDictionary["name"] as! String, value: postDictionary["value"] as! Double, category: postDictionary["category"] as! String)
+                    let item = MTransaction(id: String(snap.key), account: postDictionary["account"] as! String, date: postDictionary["date"] as! String, name: postDictionary["name"] as! String, value: postDictionary["value"] as! Double, category: postDictionary["category"] as! String)
                     
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "MM/dd/yyyy"
@@ -197,7 +202,9 @@ class FirebaseHandler: ObservableObject {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingView()
+        Group {
+            ContentView()
+        }
       //  ConfirmAccount(width: CGFloat(360), height: CGFloat(800), accounts: ["Checking", "Savings", "Other", "Another"], categories: ["Test1", "Test2", "Test4", "Test5", "Test6"])
         
     }

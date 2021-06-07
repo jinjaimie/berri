@@ -17,10 +17,10 @@ struct AccountView: View {
                 Spacer()
                 VStack(spacing: 5) {
                     ZStack {
-                        RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.66, green: 0.66, blue: 0.99)).frame(width: m.size.width / 1.2, height: (m.size.height / CGFloat(10)) * 2, alignment: .center)
+                        RoundedRectangle(cornerRadius: 5).fill(Color("ExtraColor")).frame(width: m.size.width / 1.2, height: (m.size.height / CGFloat(10)) * 2, alignment: .center)
                         VStack {
-                            Text("Total Assets").font(.title3).foregroundColor(.black).textCase(.uppercase)
-                            Text("$" + String(format:  "%.2f",  (handler.expenseList + handler.incomeList).map({$0.value}).reduce(handler.tempAccounts.map({$0.value}).reduce(0,+), +))).foregroundColor(.black).font(.largeTitle).fontWeight(.heavy)
+                            Text("Total Assets").font(.title3).foregroundColor(.white).textCase(.uppercase)
+                            Text("$" + String(format:  "%.2f",  (handler.expenseList + handler.incomeList).map({$0.value}).reduce(handler.tempAccounts.map({$0.value}).reduce(0,+), +))).foregroundColor(.white).font(.largeTitle).fontWeight(.heavy)
                         }
                     }
                     ScrollView {
@@ -28,7 +28,7 @@ struct AccountView: View {
                             let expenses = handler.expenseList.filter({$0.account == account}) + handler.incomeList.filter({$0.account == account})
                             NavigationLink(destination: ExpenseListByCategory(category: account, expenses: expenses, width: m.size.width, height: m.size.height, tempAccounts: handler.tempAccount, tempCategories: handler.tempCategories, tempIncome: handler.tempIncome)) {
                             ZStack {
-                                RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.66, green: 0.66, blue: 0.66)).frame(width: m.size.width / 1.2, height: m.size.height / 9, alignment: .center)
+                                RoundedRectangle(cornerRadius: 5).fill(Color("BoxColor")).frame(width: m.size.width / 1.2, height: m.size.height / 9, alignment: .center)
                                 VStack(alignment: .center) {
                                     Spacer()
                                     Text(account).foregroundColor(.black)
