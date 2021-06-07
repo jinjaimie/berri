@@ -14,7 +14,7 @@ struct ContentView: View {
     let accent:Color = Color(red: 0.64, green: 0.36, blue: 0.25)
     
     @StateObject var firebaseHandler = FirebaseHandler()
-
+    @State private var isAuthenticated = Auth.auth().currentUser != nil
 
     var body: some View {
         GeometryReader { m in
@@ -53,6 +53,9 @@ struct ContentView: View {
             .onAppear() {
                 UITabBar.appearance().barTintColor = main
             }
+            .fullScreenCover(isPresented: $isAuthenticated) {
+                AuthView()
+            }
         }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
@@ -84,6 +87,16 @@ class FirebaseHandler: ObservableObject {
     @Published var tempIncome = [String]()
     
     func loadData() {
+        Auth.auth().addStateDidChangeListener { auth, user in
+            if let user = user {
+                
+                print(user)
+                
+            } else {
+                print(auth)
+            }
+        }
+
         let ref = Database.database().reference()
 //         ref.child("accounts").observeSingleEvent(of: .value) { snapshot in
 //             self.tempAccounts = self.makeAccounts(from: snapshot)
