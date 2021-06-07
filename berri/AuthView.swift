@@ -14,6 +14,8 @@ struct AuthView: View {
     
     @StateObject var firebaseHandler = FirebaseHandler()
     
+    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View {
         GeometryReader { m in
             NavigationView {
@@ -41,12 +43,13 @@ struct AuthView: View {
         
         Auth.auth().signIn(withEmail: email, password: password) { authResult, err in
             print(authResult?.user)
+            presentationMode.wrappedValue.dismiss()
         }
     }
     
     func handleSignUp() {
         Auth.auth().createUser(withEmail: email, password: password) { authResult, err in
-            
+            presentationMode.wrappedValue.dismiss()
         }
     }
     

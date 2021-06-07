@@ -21,11 +21,8 @@ struct ConfirmAccount: View {
     @State var incomes: [String]
     @ObservedObject private var addItem = NewTransaction()
     
-    @State private var selection = "Red"
-    let colors = ["Red", "Green", "Blue", "Black", "Tartan"]
-    
-    
     @State var category : String = ""
+    
     var body: some View {
         VStack(spacing: 10) {
                 Picker("Type", selection: $selector) {
@@ -100,6 +97,17 @@ struct ConfirmAccount: View {
                             }
                         }.pickerStyle(MenuPickerStyle())
                     }.frame(width: width / 1.2)
+                    HStack {
+                        Picker(selection: $addItem.accountIn, label: HStack {
+                            Text("Account to add to: ")
+                            Spacer()
+                            addItem.accountIn == "" ? Text("Select") : Text(addItem.accountIn)
+                        }) {
+                            ForEach(accounts, id: \.self) {
+                                Text($0)
+                            }
+                        }.pickerStyle(MenuPickerStyle())
+                    }.frame(width: width / 1.2)
                 }
                 
               
@@ -117,33 +125,50 @@ struct ConfirmAccount: View {
                 }.frame(width: width/1.2)
             }
             Spacer()
+    
+            HStack {
+                Spacer()
+                Button(action: {
+                    self.addItem.name = ""
+                    self.addItem.value = 0.0
+                    self.addItem.accountIn = ""
+                    self.addItem.accountOut = ""
+                    self.addItem.date = ""
+                    self.addItem.incomeType = ""
+                    self.addItem.category = ""
+                }) {
+                   Text("Clear").font(.title2)
+                }
+                Spacer()
                 Button(action: {
                     let ref = Database.database().reference()
                     let tempConvDate = showItems.itemDateFormat.string(from: addItem.convDate)
                                         
                     if (selector == "Expense") {
-                        print("here")
+                   
                         let newKey : String = ref.child("expenditure").childByAutoId().key!
-                        ref.child("expenditures").child(newKey).setValue(["account": addItem.accountOut, "category": addItem.category, "date": tempConvDate, "name": addItem.name, "value": abs(self.value!)])
-                        print(newKey)
+                        ref.child("expenditures").child(newKey).setValue(["account": addItem.accountOut, "category": addItem.category, "date": tempConvDate, "name": addItem.name, "value": -abs(self.value!)])
+                      
                     } else if (selector == "Income") {
-                        print("here income")
+                     
                         let newKey : String = ref.child("income").childByAutoId().key!
                         ref.child("income").child(newKey).setValue(["account": addItem.accountIn, "category": addItem.category, "date": tempConvDate, "incomeType": addItem.incomeType, "name": addItem.name, "value": abs(self.value!)])
-                        print(newKey)
+                 
                     } else if (selector == "Transfer") {
-                        print("here transfer")
+                    
                         addItem.name = (addItem.accountOut + " to " + addItem.accountIn)
                         let newKeyI : String = ref.child("income").childByAutoId().key!
-                        ref.child("income").child(newKeyI).setValue(["account": addItem.accountIn, "category": "", "date": tempConvDate, "incomeType": "Transfer", "name": (addItem.accountOut + " to " + addItem.accountIn), "value": abs(self.value!)])
+                        ref.child("income").child(newKeyI).setValue(["account": addItem.accountIn, "category": "", "date": tempConvDate, "incomeType": "Transfer", "name": (addItem.accountOut + " to " + addItem.accountIn), "value": -abs(self.value!)])
                         let newKeyE : String = ref.child("expenditure").childByAutoId().key!
                         ref.child("expenditures").child(newKeyE).setValue(["account": addItem.accountOut, "category": "Transfer", "date": tempConvDate, "name": addItem.name, "value": abs(self.value!)])
-                        print(newKeyI)
-                        print(newKeyE)
                     }
                 }) {
-                    Text("Submit")
-                }.padding(height/10)
+                    Text("Submit").font(.title2)
+                }
+                Spacer()
+            }
+            Spacer()
+            
         }
     }
 }
