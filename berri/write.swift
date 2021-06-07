@@ -21,7 +21,7 @@ struct WriteTest : View {
             TextField("Enter 3", text: $text3)
             
             Button(action: {
-                let ref = Database.database().reference()
+                let ref = Database.database().reference().child(Auth.auth().currentUser!.uid)
                 ref.child("test").child(String(Int.random(in: 6..<19428))).setValue(["username": text1, "user1": text2, "user3": text3])
             }) {
                 Text("Submit").font(.title)

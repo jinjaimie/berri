@@ -141,7 +141,7 @@ struct ConfirmAccount: View {
                 }
                 Spacer()
                 Button(action: {
-                    let ref = Database.database().reference()
+                    let ref = Database.database().reference().child(Auth.auth().currentUser!.uid)
                     let tempConvDate = showItems.itemDateFormat.string(from: addItem.convDate)
                                         
                     if (selector == "Expense") {

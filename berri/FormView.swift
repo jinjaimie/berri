@@ -14,7 +14,7 @@ struct AccountForm: View {
     @State var amount:String = ""
     @State var showAlert = false
     @State var alertType = ""
-    @State var ref: DatabaseReference! = Database.database().reference()
+    @State var ref: DatabaseReference! = Database.database().reference().child(Auth.auth().currentUser!.uid)
     
     var body: some View {
         GeometryReader { geom in
@@ -100,7 +100,7 @@ struct CategoryForm: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var name:String = ""
     @State var showAlert = false
-    @State var ref: DatabaseReference! = Database.database().reference()
+    @State var ref: DatabaseReference! = Database.database().reference().child(Auth.auth().currentUser!.uid)
     
     var body: some View {
         GeometryReader { geom in

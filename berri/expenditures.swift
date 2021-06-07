@@ -137,6 +137,10 @@ struct Expenditures: View {
         var temp : [Transaction] = []
         let date1 = Date()
         
+        if exp.count == 0 {
+            return initial
+        }
+        
         if (cat == "" && exp[0].category != "Transfer") {
             initial = exp.filter({($0.category != "Transfer" && $0.incomeType == "") || ($0.incomeType != "Transfer" && $0.category == "")})
            
@@ -292,7 +296,7 @@ struct showItems: View {
                 }.frame(width: width/1.2) : nil
                 Spacer()
                 Button(action: {
-                    let ref = Database.database().reference()
+                    let ref = Database.database().reference().child(Auth.auth().currentUser!.uid)
                     exp.date = showItems.itemDateFormat.string(from: exp.convDate)
                     exp.isIncome ?
                         ref.child("income").child(exp.id).setValue(["account": exp.account, "category": exp.category, "date": exp.date , "incomeType": exp.incomeType, "name": exp.name, "value": Double(abs(exp.value))]) :  ref.child("expenditures").child(exp.id).setValue(["account": exp.account, "category": exp.category, "date": exp.date, "name": exp.name, "value": Double(-abs(exp.value))])
