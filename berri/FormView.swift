@@ -99,8 +99,14 @@ struct AccountForm: View {
 struct CategoryForm: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var name:String = ""
+    var type:String = ""
     @State var showAlert = false
     @State var ref: DatabaseReference! = Database.database().reference()
+    
+    init(t:String) {
+        self.type = t
+        print("HERE \(type)")
+    }
     
     var body: some View {
         GeometryReader { geom in
@@ -117,7 +123,8 @@ struct CategoryForm: View {
                     Spacer()
                     HStack {
                         Button(action: {
-                            self.ref.child("categories/").getData { (error, snapshot) in
+                            self.ref.child(type).getData { (error, snapshot) in
+                                print(type)
                                 var array:[String] = []
                                 var found = false
                                 for child in snapshot.children {
@@ -132,7 +139,7 @@ struct CategoryForm: View {
                                 }
                                 if (found == false) {
                                     array.append(name)
-                                    self.ref.child("categories").setValue(array) { (err, ref) in
+                                    self.ref.child(type).setValue(array) { (err, ref) in
                                         self.presentationMode.wrappedValue.dismiss()
                                     }
                                 }

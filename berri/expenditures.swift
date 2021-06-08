@@ -18,6 +18,8 @@ struct Expenditures: View {
     @State var incomeList : [MTransaction]
     @State var width: CGFloat
     @State var height: CGFloat
+    @StateObject var fbHandler: FirebaseHandler
+    
     
     @State var chosenList = [String]()
     
@@ -40,6 +42,8 @@ struct Expenditures: View {
                         self.expenseList = self.reconList
                         self.viewInt = 5
                         self.chosenList = self.tempCategories
+                        print("Hi recon 1: ", self.reconList.map({$0.name}))
+
                     }) {
                         Text(curView[5])
                     }
@@ -47,6 +51,7 @@ struct Expenditures: View {
                         self.expenseList = self.reconList.filter({$0.isIncome == true}) +  self.incomeList
                         self.viewInt = 1
                         self.chosenList = self.tempCategories + self.tempIncome
+                        print("Hi recon 2 : ",  self.reconList.map({$0.name}))
                        
                     }) {
                         Text(curView[1])
@@ -62,6 +67,8 @@ struct Expenditures: View {
                         self.expenseList = self.reconList.filter({$0.isIncome == true})
                         self.viewInt = 3
                         self.chosenList = self.tempCategories
+                        print("Hi recon income only: ",  self.reconList.map({$0.name}))
+
                     }) {
                         Text(curView[3])
                     }
@@ -103,7 +110,7 @@ struct Expenditures: View {
                         VStack {
                             if (viewInt != 4) {
                                 HStack {
-                                    NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome)) {
+                                    NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, fbHandler: fbHandler)) {
                                         Spacer()
                                         ZStack {
                                             RoundedRectangle(cornerRadius: 5).fill(Color("IncomeColor")).frame(width: width / 1.2, height: height / 9, alignment: .center)
@@ -121,7 +128,7 @@ struct Expenditures: View {
                                     }
                                 }
                             } else {
-                                ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome)
+                                ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, fbHandler: fbHandler)
                             }
                             
                         }
@@ -178,7 +185,8 @@ struct Expenditures: View {
         } else {
             temp = initial
         }
-       
+        //print("init: ", initial.map({$0.name}))
+        //print("filtered: " , temp.map({$0.name}))
         return temp
         
     }
@@ -195,6 +203,7 @@ struct ExpenseListByCategory: View {
     @State var tempAccounts : [String]
     @State var tempCategories : [String]
     @State var tempIncome : [String]
+    @StateObject var fbHandler : FirebaseHandler
     
     var body: some View {
         //ScrollView {
@@ -202,7 +211,7 @@ struct ExpenseListByCategory: View {
                 category != "Transfer" ?
                     Text("Transactions for \n" + category).font(.title2).padding(15).textCase(.uppercase).foregroundColor(.black).multilineTextAlignment(.center) : nil
                 ForEach(expenses, id: \.self) { i in
-                    showItems(exp: i, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome)
+                    showItems(exp: i, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, fbHandler: fbHandler)
                 }
                 Spacer()
           //  }
@@ -219,7 +228,9 @@ struct showItems: View {
     @State var tempAccounts : [String]
     @State var tempCategories : [String]
     @State var tempIncome : [String]
-    @State var newValue : Double? = 0.0
+    @StateObject var fbHandler : FirebaseHandler
+    @State var value: Double! = 0.0
+
     
     static let itemDateFormat: DateFormatter = {
         let formatter = DateFormatter()
@@ -260,9 +271,9 @@ struct showItems: View {
                 HStack {
                     Text("Value of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     Spacer()
-                  //  CurrencyTextField("Amount", value: $.value, alwaysShowFractions: false, numberOfDecimalPlaces: 2, currencySymbol: "US$").font(.largeTitle).multilineTextAlignment(TextAlignment.center)
-                    CurrencyTextField("Amount", value: self.$newValue, alwaysShowFractions: false, numberOfDecimalPlaces: 2, currencySymbol: "US$").font(.title).multilineTextAlignment(TextAlignment.center)
-//                    TextField(String(abs(newValue)), value: $newValue, formatter: NumberFormatter()).border(Color.black).padding(5)
+
+                    CurrencyTextField("Amount", value: self.$value, alwaysShowFractions: false, numberOfDecimalPlaces: 2, currencySymbol: "US$").font(.largeTitle).multilineTextAlignment(TextAlignment.center)
+                    //TextField(String(abs(exp.value)), value: $exp.value, formatter: NumberFormatter()).border(Color.black).padding(5)
                 }.frame(width: width/1.2)
                 HStack {
                     Text("Account of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
@@ -295,20 +306,39 @@ struct showItems: View {
                     }.pickerStyle(MenuPickerStyle())
                 }.frame(width: width/1.2) : nil
                 Spacer()
+                HStack {
+                    Spacer()
                 Button(action: {
                     exp.value = newValue!
                     let ref = Database.database().reference()
                     exp.date = showItems.itemDateFormat.string(from: exp.convDate)
+                    print("is submitting...")
+                    print(exp.isIncome, exp.id)
                     exp.isIncome ?
-                        ref.child("income").child(exp.id).setValue(["account": exp.account, "category": exp.category, "date": exp.date , "incomeType": exp.incomeType, "name": exp.name, "value": Double(abs(exp.value))]) :  ref.child("expenditures").child(exp.id).setValue(["account": exp.account, "category": exp.category, "date": exp.date, "name": exp.name, "value": Double(-abs(exp.value))])
+                        ref.child("income").child(exp.id).setValue(["account": exp.account, "category": exp.category, "date": exp.date , "incomeType": exp.incomeType, "name": exp.name, "value": Double(abs(value))]) :
+                        ref.child("expenditures").child(exp.id).setValue(["account": exp.account, "category": exp.category, "date": exp.date, "name": exp.name, "value": Double(-abs(value))])
                     self.clicked.toggle()
+                    fbHandler.loadData()
                 }) {
                     ZStack {
                         Text("Submit").font(.title2)
                     }
                 }
+                    Spacer()
+                Button(action: {
+                    let ref = Database.database().reference()
+                    exp.isIncome ? ref.child("income").child(exp.id).removeValue() : ref.child("expenditures").child(exp.id).removeValue()
+                    self.clicked.toggle()
+                    fbHandler.loadData()
+                }) {
+                    ZStack {
+                        Text("Delete").font(.title2)
+                    }
+                }
+                    Spacer()
             }
-        }.frame(width: width / 1.2, height: height / 9, alignment: .center).onAppear(perform: {exp.value = abs(exp.value)})
+            }
+        }.frame(width: width / 1.2, height: height / 9, alignment: .center).onAppear(perform: {self.value = abs(exp.value)})
     }
 }
 

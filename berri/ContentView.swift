@@ -44,7 +44,7 @@ struct ContentView: View {
                 .tag(1)
                 
                 ZStack {
-                    Expenditures(tempAccounts: firebaseHandler.tempAccount, tempCategories: firebaseHandler.tempCategories, tempIncome: firebaseHandler.tempIncome, expenseList: firebaseHandler.expenseList, expenses: firebaseHandler.expenseList, reconList: firebaseHandler.reconList, incomeList: firebaseHandler.incomeList, width: m.size.width, height: m.size.height, chosenList : firebaseHandler.tempCategories)
+                    Expenditures(tempAccounts: firebaseHandler.tempAccount, tempCategories: firebaseHandler.tempCategories, tempIncome: firebaseHandler.tempIncome, expenseList: firebaseHandler.expenseList, expenses: firebaseHandler.expenseList, reconList: firebaseHandler.reconList, incomeList: firebaseHandler.incomeList, width: m.size.width, height: m.size.height, fbHandler: firebaseHandler, chosenList : firebaseHandler.tempCategories)
                 }.tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill").foregroundColor(.white) }
                 .tag(2)
                 
@@ -54,7 +54,10 @@ struct ContentView: View {
                     Label("Add", systemImage: "plus").foregroundColor(.black)
                 }.tag(3)
 
-                 
+                ZStack {
+                    TipCalculator(width: m.size.width, height: m.size.height)
+                }.tabItem { Label("Tips", systemImage: "candybarphone") }
+                .tag(4)
                 ZStack {
                     SettingView()
                 }.tabItem { Label("Settings", systemImage: "gear") }
@@ -96,8 +99,12 @@ struct SettingView: View {
                 Text("Add an account").padding()
             }
             NavigationLink(
-                destination: CategoryForm()) {
-                Text("Add a category").padding()
+                destination: CategoryForm(t: "expenseTypes")) {
+                Text("Add an expense type").padding()
+            }
+            NavigationLink(
+                destination: CategoryForm(t: "incomeTypes")) {
+                Text("Add an income type").padding()
             }
         }
     }
@@ -119,7 +126,7 @@ class FirebaseHandler: ObservableObject {
 //         ref.child("accounts").observeSingleEvent(of: .value) { snapshot in
 //             self.tempAccounts = self.makeAccounts(from: snapshot)
 //         }
-        ref.child("categories").observeSingleEvent(of: .value) { snapshot in
+        ref.child("expenseTypes").observeSingleEvent(of: .value) { snapshot in
             self.tempCategories = self.makeItems(from: snapshot).sorted(by: {$0 < $1})
         }
         ref.child("incomeTypes").observeSingleEvent(of: .value) { snapshot in
@@ -140,8 +147,10 @@ class FirebaseHandler: ObservableObject {
             let temp = self.makeAccounts(from: snapshot)
             self.tempAccount = Array(temp.keys).sorted(by: {$0 < $1})
             self.tempAccounts = temp
-     
         }
+        print("is called: ", self.expenseList.map({$0.name}))
+        print("is called income: ", self.incomeList.map({$0.name}))
+        print("is called recon: ", self.reconList.map({$0.name}))
     }
     
     func makeItems(from snapshot: DataSnapshot) -> [String] {
@@ -186,8 +195,9 @@ class FirebaseHandler: ObservableObject {
                         item.incomeType = postDictionary["incomeType"] as! String
                     }
                     if (item.category != "") {
-                        isIncome ? item.value = -(item.value) : nil
+                       // isIncome ? item.value = -(item.value) : nil
                         reconList.append(item)
+                      //  print("did append", item.name)
                     }
                     if (isIncome && item.category == "" || !isIncome && item.category != "") {
                         tempList.append(item)
@@ -195,7 +205,6 @@ class FirebaseHandler: ObservableObject {
                 }
             }
         }
-        print(reconList)
         return tempList
     }
 }

@@ -25,8 +25,8 @@ struct AccountView: View {
                     }
                     ScrollView {
                         ForEach (Array(handler.tempAccounts.keys.sorted(by: {$0 < $1})), id: \.self) { (account) in
-                            let expenses = handler.expenseList.filter({$0.account == account}) + handler.incomeList.filter({$0.account == account})
-                            NavigationLink(destination: ExpenseListByCategory(category: account, expenses: expenses, width: m.size.width, height: m.size.height, tempAccounts: handler.tempAccount, tempCategories: handler.tempCategories, tempIncome: handler.tempIncome)) {
+                            let expenses = handler.reconList.filter({$0.account == account}) + handler.incomeList.filter({$0.account == account})
+                            NavigationLink(destination: ExpenseListByCategory(category: account, expenses: expenses, width: m.size.width, height: m.size.height, tempAccounts: handler.tempAccount, tempCategories: handler.tempCategories, tempIncome: handler.tempIncome, fbHandler: handler)) {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 5).fill(Color("BoxColor")).frame(width: m.size.width / 1.2, height: m.size.height / 9, alignment: .center)
                                 VStack(alignment: .center) {

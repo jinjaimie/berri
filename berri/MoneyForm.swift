@@ -148,11 +148,13 @@ struct ConfirmAccount: View {
                    
                         let newKey : String = ref.child("expenditure").childByAutoId().key!
                         ref.child("expenditures").child(newKey).setValue(["account": addItem.accountOut, "category": addItem.category, "date": tempConvDate, "name": addItem.name, "value": -abs(self.value!)])
+                        print("did expense at ", newKey)
                       
                     } else if (selector == "Income") {
                      
                         let newKey : String = ref.child("income").childByAutoId().key!
                         ref.child("income").child(newKey).setValue(["account": addItem.accountIn, "category": addItem.category, "date": tempConvDate, "incomeType": addItem.incomeType, "name": addItem.name, "value": abs(self.value!)])
+                        print("did income at: ", newKey)
                  
                     } else if (selector == "Transfer") {
                     
