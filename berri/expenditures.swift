@@ -230,15 +230,15 @@ struct showItems: View {
     var body: some View {
         ZStack {
             exp.isIncome ? RoundedRectangle(cornerRadius: 5).fill(Color("IncomeColor")).frame(width: width / 1.1, height: height / 10, alignment: .center) :
-                            RoundedRectangle(cornerRadius: 5).fill(Color("ExpenseColor")).frame(width: width / 1.1, height: height / 10, alignment: .center)
+                            RoundedRectangle(cornerRadius: 5).fill(Color("BoxColor")).frame(width: width / 1.1, height: height / 10, alignment: .center)
 
             HStack {
                 Button(action: {self.clicked.toggle()
                     newValue = exp.value
                 }) {
-                    Text(exp.name).foregroundColor(.white)
+                    Text(exp.name).foregroundColor(.black)
                     Spacer()
-                    Text("$" + String(format: "%.2f", abs(exp.value))).foregroundColor(.white)
+                    Text("$" + String(format: "%.2f", abs(exp.value))).foregroundColor(.black)
                     Image(systemName: "chevron.right")
                 }
             }.frame(width: width / 1.4, height: height / 9, alignment: .center)
