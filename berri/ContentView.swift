@@ -13,9 +13,26 @@ struct ContentView: View {
     let main:UIColor = UIColor(red: 0.937, green: 0.824, blue: 0.827, alpha: 1)
     let accent:Color = Color(red: 0.64, green: 0.36, blue: 0.25)
     
+    //UIScrollView.appearance().backgroundColor = UIColor.red
+    
     @StateObject var firebaseHandler = FirebaseHandler()
 
-
+    var backgroundColor: UIColor? = UIColor(red: 0.937, green: 0.824, blue: 0.827, alpha: 1)
+        var titleColor: Color = Color(red: 0.64, green: 0.36, blue: 0.25)
+    let coloredAppearance = UINavigationBarAppearance()
+   
+    init() {
+            // 1.
+           //  UINavigationBar.appearance().backgroundColor = main
+        
+       
+            // 3.
+          //  UINavigationBar.appearance().titleTextAttributes = [
+             //   .font : UIFont(name: "HelveticaNeue-Thin")!]
+    
+    
+        }
+    
     var body: some View {
         GeometryReader { m in
         NavigationView {
@@ -26,10 +43,7 @@ struct ContentView: View {
                 .tag(1)
                 
                 ZStack {
-
-                  //  Expenditures(tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, expenseList: expenseList, expenses: expenseList, reconList: reconList, incomeList: incomeList, width: m.size.width, height: m.size.height)
-                Expenditures(tempAccounts: Array(firebaseHandler.tempAccounts.keys), tempCategories: firebaseHandler.tempCategories, tempIncome: firebaseHandler.tempIncome, expenseList: firebaseHandler.expenseList, expenses: firebaseHandler.expenseList, reconList: firebaseHandler.reconList, incomeList: firebaseHandler.incomeList, width: m.size.width, height: m.size.height)
-
+                    Expenditures(tempAccounts: firebaseHandler.tempAccount, tempCategories: firebaseHandler.tempCategories, tempIncome: firebaseHandler.tempIncome, expenseList: firebaseHandler.expenseList, expenses: firebaseHandler.expenseList, reconList: firebaseHandler.reconList, incomeList: firebaseHandler.incomeList, width: m.size.width, height: m.size.height, fbHandler: firebaseHandler, chosenList : firebaseHandler.tempCategories)
                 }.tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill").foregroundColor(.white) }
                 .tag(2)
                 
@@ -39,7 +53,10 @@ struct ContentView: View {
                     Label("Add", systemImage: "plus").foregroundColor(.black)
                 }.tag(3)
 
-                 
+                ZStack {
+                    TipCalculator(width: m.size.width, height: m.size.height)
+                }.tabItem { Label("Tips", systemImage: "candybarphone") }
+                .tag(4)
                 ZStack {
                     SettingView()
                 }.tabItem { Label("Settings", systemImage: "gear") }
@@ -47,13 +64,24 @@ struct ContentView: View {
             }.accentColor(accent).onAppear(perform: firebaseHandler.loadData)
             .toolbar {
                 ToolbarItem(placement: .principal) {
+                    VStack {
+                        Spacer()
                     Image("berri")
+                        Spacer()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        firebaseHandler.loadData()
+                    }) {
+                        Image(systemName: "arrow.clockwise")
+                    }
                 }
             }
             .onAppear() {
                 UITabBar.appearance().barTintColor = main
             }
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }.navigationViewStyle(StackNavigationViewStyle()).navigationBarHidden(false)
     }
 }
 }
@@ -84,34 +112,36 @@ class FirebaseHandler: ObservableObject {
     @Published var tempIncome = [String]()
     
     func loadData() {
+        reconList = []
         let ref = Database.database().reference()
 //         ref.child("accounts").observeSingleEvent(of: .value) { snapshot in
 //             self.tempAccounts = self.makeAccounts(from: snapshot)
 //         }
-        ref.child("categories").observeSingleEvent(of: .value) { snapshot in
-            self.tempCategories = self.makeItems(from: snapshot)
+        ref.child("expenseTypes").observeSingleEvent(of: .value) { snapshot in
+            self.tempCategories = self.makeItems(from: snapshot).sorted(by: {$0 < $1})
         }
         ref.child("incomeTypes").observeSingleEvent(of: .value) { snapshot in
-            self.tempIncome = self.makeItems(from: snapshot)
+            self.tempIncome = self.makeItems(from: snapshot).sorted(by: {$0 < $1})
         }
         ref.child("expenditures").observeSingleEvent(of: .value) { snapshot in
             let temp = self.createTransactions(from: snapshot, isIncome: false)
-            self.expenseList = temp
+            self.expenseList = temp.sorted(by: {$0.convDate > $1.convDate})
+            // print("Expenses: ", temp.map({$0.name}))
         }
         ref.child("income").observeSingleEvent(of: .value) { snapshot in
             let temp = self.createTransactions(from: snapshot, isIncome: true)
-            self.incomeList = temp
+            self.incomeList = temp.sorted(by: {$0.convDate > $1.convDate})
+           // print("Incomes: ", temp.map({$0.name}))
         }
 
         ref.child("accounts").observeSingleEvent(of: .value) { snapshot in
             let temp = self.makeAccounts(from: snapshot)
-            var temp2 = [String]()
-            for i in temp.keys {
-                temp2.append(String(i))
-            }
-            self.tempAccount = temp2
+            self.tempAccount = Array(temp.keys).sorted(by: {$0 < $1})
             self.tempAccounts = temp
         }
+        print("is called: ", self.expenseList.map({$0.name}))
+        print("is called income: ", self.incomeList.map({$0.name}))
+        print("is called recon: ", self.reconList.map({$0.name}))
     }
     
     func makeItems(from snapshot: DataSnapshot) -> [String] {
@@ -156,9 +186,9 @@ class FirebaseHandler: ObservableObject {
                         item.incomeType = postDictionary["incomeType"] as! String
                     }
                     if (item.category != "") {
-                        isIncome ? item.value = -(item.value) : nil
+                       // isIncome ? item.value = -(item.value) : nil
                         reconList.append(item)
-                        print(item.name, " : ", item.value)
+                      //  print("did append", item.name)
                     }
                     if (isIncome && item.category == "" || !isIncome && item.category != "") {
                         tempList.append(item)
