@@ -7,7 +7,7 @@ import SwiftUIKit
 struct Expenditures: View {
     //@State var tempAccounts = [String]()
     //@State var tempCategories = [String]()
-   // @State var tempIncome = [String]()
+    // @State var tempIncome = [String]()
     @State var expenseList = [MTransaction]()
     
     //@State var expenses : [MTransaction]
@@ -15,11 +15,11 @@ struct Expenditures: View {
     // @State var reconList : [MTransaction]
     @State var curView = ["All Expenditures (E)", "All Income (P+I)", "True Income (I)", "Payback Only", "Transfer", "Reconed Expenses (E-P)"]
     @State var viewInt = 0
-   // @State var incomeList : [MTransaction]
+    // @State var incomeList : [MTransaction]
     @State var width: CGFloat
     @State var height: CGFloat
     
-    @StateObject var fbHandler = FirebaseHandler()
+    @ObservedObject var fbHandler = FirebaseHandler()
     
     
     @State var chosenList = [String]()
@@ -98,7 +98,7 @@ struct Expenditures: View {
                     }
                 }
             }
-        
+            
             
             VStack(spacing: 5) {
                 ZStack {
@@ -116,7 +116,9 @@ struct Expenditures: View {
                         VStack {
                             if (viewInt != 4) {
                                 HStack {
+                                    
                                     NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, fbHandler: fbHandler)) {
+                                        
                                         Spacer()
                                         ZStack {
                                             RoundedRectangle(cornerRadius: 5).fill(Color("IncomeColor")).frame(width: width / 1.2, height: height / 9, alignment: .center)
@@ -139,7 +141,7 @@ struct Expenditures: View {
                             
                         }
                     }.frame(height: height, alignment: .topLeading)
-                }
+                }.onAppear(perform: self.refresh(t: viewInt))
             }
         }
     }
@@ -218,21 +220,21 @@ struct ExpenseListByCategory: View {
     @State var expenses: [MTransaction]
     @State var width: CGFloat
     @State var height: CGFloat
-   
-    @StateObject var fbHandler : FirebaseHandler
+    
+    @ObservedObject var fbHandler : FirebaseHandler
     
     var body: some View {
         ScrollView {
-        VStack(spacing: 0) {
-            category != "Transfer" ?
-                Text("Transactions for \n" + category).font(.title2).padding(15).textCase(.uppercase).foregroundColor(.black).multilineTextAlignment(.center) : nil
-            ForEach(expenses, id: \.self) { i in
-                showItems(exp: i, width: width, height: height, fbHandler: fbHandler)
-            }
-            Spacer()
-            //  }
-        }.navigationBarHidden(false)
-    }
+            VStack(spacing: 0) {
+                category != "Transfer" ?
+                    Text("Transactions for \n" + category).font(.title2).padding(15).textCase(.uppercase).foregroundColor(.black).multilineTextAlignment(.center) : nil
+                ForEach(expenses, id: \.self) { i in
+                    showItems(exp: i, width: width, height: height, fbHandler: fbHandler)
+                }
+                Spacer()
+                //  }
+            }.navigationBarHidden(false)
+        }
     }
 }
 
@@ -242,8 +244,10 @@ struct showItems: View {
     @State var editChoice: Bool = false
     @State var width: CGFloat
     @State var height: CGFloat
- 
-    @StateObject var fbHandler : FirebaseHandler
+    
+    
+    @ObservedObject var fbHandler : FirebaseHandler
+    
     @State var value: Double! = 0.0
     
     
@@ -254,7 +258,7 @@ struct showItems: View {
     }()
     
     var body: some View {
-
+        
         ZStack {
             exp.isIncome ? RoundedRectangle(cornerRadius: 5).fill(Color("IncomeColor")).frame(width: width / 1.1, height: height / 10, alignment: .center) :
                 RoundedRectangle(cornerRadius: 5).fill(Color("BoxColor")).frame(width: width / 1.1, height: height / 10, alignment: .center)
@@ -359,11 +363,8 @@ struct showItems: View {
                     
                 }
             }
-        
+            
         }.frame(width: width / 1.2, height: height / 9, alignment: .center).onAppear(perform: {self.value = abs(exp.value)})
-    
-        
-        
     }
 }
 

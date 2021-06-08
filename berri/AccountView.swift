@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct AccountView: View {
-   //  @ObservedObject var handler: FirebaseHandler
+    //  @ObservedObject var handler: FirebaseHandler
     @StateObject var handler = FirebaseHandler()
-
+    
     var body: some View {
         GeometryReader { m in
             //NavigationView {
@@ -27,24 +27,23 @@ struct AccountView: View {
                     ScrollView {
                         ForEach (Array(handler.tempAccounts.keys.sorted(by: {$0 < $1})), id: \.self) { (account) in
                             let expenses = handler.reconList.filter({$0.account == account}) + handler.incomeList.filter({$0.account == account})
-                            NavigationLink(destination: ExpenseListByCategory(category: account, expenses: expenses, width: m.size.width, height: m.size.height, fbHandler: handler)) {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 5).fill(Color("BoxColor")).frame(width: m.size.width / 1.2, height: m.size.height / 9, alignment: .center)
-                                VStack(alignment: .center) {
-                                    Spacer()
-                                    Text(account).foregroundColor(.black)
-                                    Text("$" + String(format:  "%.2f",  expenses.map({$0.value}).reduce(handler.tempAccounts[account]!, +))).bold().foregroundColor(.black)
-                                    Spacer()
+                            NavigationLink(destination: ExpenseListByCategory(category: account, expenses: expenses, width: m.size.width, height: m.size.height, fbHandler: handler)){
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 5).fill(Color("BoxColor")).frame(width: m.size.width / 1.2, height: m.size.height / 9, alignment: .center)
+                                    VStack(alignment: .center) {
+                                        Spacer()
+                                        Text(account).foregroundColor(.black)
+                                        Text("$" + String(format:  "%.2f",  expenses.map({$0.value}).reduce(handler.tempAccounts[account]!, +))).bold().foregroundColor(.black)
+                                        Spacer()
+                                    }
                                 }
-                            }
                             }
                         }
                     }.frame(height: m.size.height, alignment: .topLeading)
-             
+                    
                 }
                 Spacer()
             }
         }.navigationViewStyle(StackNavigationViewStyle())
-            
     }
 }

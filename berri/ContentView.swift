@@ -49,6 +49,7 @@ struct ContentView: View {
                 .tag(1)
                 
                 ZStack {
+
                     Expenditures(expenseList: firebaseHandler.expenseList, width: m.size.width, height: m.size.height, fbHandler: firebaseHandler, chosenList : firebaseHandler.tempCategories)
                 }.tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill").foregroundColor(.white) }
                 .tag(2)
@@ -56,7 +57,7 @@ struct ContentView: View {
                 
                 
                 ZStack {
-                    ConfirmAccount(width: m.size.width, height: m.size.height, accounts: firebaseHandler.tempAccount, categories: firebaseHandler.tempCategories, incomes: firebaseHandler.tempIncome)
+                    ConfirmAccount(width: m.size.width, height: m.size.height, accounts: $firebaseHandler.tempAccount, categories: $firebaseHandler.tempCategories, incomes: $firebaseHandler.tempIncome)
                 }.tabItem {
                     Label("Add", systemImage: "plus").foregroundColor(.black)
                 }.tag(3)
