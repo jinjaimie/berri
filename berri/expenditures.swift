@@ -10,12 +10,12 @@ struct Expenditures: View {
     @State var tempIncome = [String]()
     @State var expenseList = [MTransaction]()
     
-    @State var expenses : [MTransaction]
+    @Binding var expenses : [MTransaction]
     @State var timeFilter = "MONTH"
-    @State var reconList : [MTransaction]
+    @Binding var reconList : [MTransaction]
     @State var curView = ["All Expenditures (E)", "All Income (P+I)", "True Income (I)", "Payback Only", "Transfer", "Reconed Expenses (E-P)"]
     @State var viewInt = 0
-    @State var incomeList : [MTransaction]
+    @Binding var incomeList : [MTransaction]
     @State var width: CGFloat
     @State var height: CGFloat
     @StateObject var fbHandler: FirebaseHandler
