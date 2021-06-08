@@ -5,20 +5,21 @@ import Firebase
 import SwiftUIKit
 
 struct Expenditures: View {
-    @State var tempAccounts = [String]()
-    @State var tempCategories = [String]()
-    @State var tempIncome = [String]()
+    //@State var tempAccounts = [String]()
+    //@State var tempCategories = [String]()
+   // @State var tempIncome = [String]()
     @State var expenseList = [MTransaction]()
     
-    @State var expenses : [MTransaction]
+    //@State var expenses : [MTransaction]
     @State var timeFilter = "MONTH"
-    @State var reconList : [MTransaction]
+    // @State var reconList : [MTransaction]
     @State var curView = ["All Expenditures (E)", "All Income (P+I)", "True Income (I)", "Payback Only", "Transfer", "Reconed Expenses (E-P)"]
     @State var viewInt = 0
-    @State var incomeList : [MTransaction]
+   // @State var incomeList : [MTransaction]
     @State var width: CGFloat
     @State var height: CGFloat
-    @StateObject var fbHandler: FirebaseHandler
+    
+    @StateObject var fbHandler = FirebaseHandler()
     
     
     @State var chosenList = [String]()
@@ -31,49 +32,49 @@ struct Expenditures: View {
             HStack {
                 Menu {
                     Button(action: {
-                        self.expenseList = self.expenses
+                        self.expenseList = fbHandler.expenseList
                         self.viewInt = 0
-                        self.chosenList = self.tempCategories
+                        self.chosenList = fbHandler.tempCategories
                         
                     }) {
                         Text(curView[0])
                     }
                     Button(action: {
-                        self.expenseList = self.reconList
+                        self.expenseList = fbHandler.reconList
                         self.viewInt = 5
-                        self.chosenList = self.tempCategories
+                        self.chosenList = fbHandler.tempCategories
                         // print("Hi recon 1: ", self.reconList.map({$0.name}))
                         
                     }) {
                         Text(curView[5])
                     }
                     Button(action: {
-                        self.expenseList = self.reconList.filter({$0.isIncome == true}) +  self.incomeList
+                        self.expenseList = fbHandler.reconList.filter({$0.isIncome == true}) +  fbHandler.incomeList
                         self.viewInt = 1
-                        self.chosenList = self.tempCategories + self.tempIncome
+                        self.chosenList = fbHandler.tempCategories + fbHandler.tempIncome
                         //   print("Hi recon 2 : ",  self.reconList.map({$0.name}))
                         
                     }) {
                         Text(curView[1])
                     }
                     Button(action: {
-                        self.expenseList = self.incomeList
+                        self.expenseList = fbHandler.incomeList
                         self.viewInt = 2
-                        self.chosenList = self.tempIncome
+                        self.chosenList = fbHandler.tempIncome
                     }) {
                         Text(curView[2])
                     }
                     Button(action: {
-                        self.expenseList = self.reconList.filter({$0.isIncome == true})
+                        self.expenseList = fbHandler.reconList.filter({$0.isIncome == true})
                         self.viewInt = 3
-                        self.chosenList = self.tempCategories
+                        self.chosenList = fbHandler.tempCategories
                         //   print("Hi recon income only: ",  self.reconList.map({$0.name}))
                         
                     }) {
                         Text(curView[3])
                     }
                     Button(action: {
-                        self.expenseList = self.expenses.filter({$0.category == "Transfer"})
+                        self.expenseList = fbHandler.expenseList.filter({$0.category == "Transfer"})
                         self.viewInt = 4
                         self.chosenList = ["Transfer"]
                     }) {
@@ -91,6 +92,7 @@ struct Expenditures: View {
                 ForEach (times, id: \.self) { t in
                     Button (action: {
                         self.timeFilter = t
+                        self.refresh(t: viewInt)
                     }) {
                         (t != timeFilter) ? Text(t).font(.title3).foregroundColor(.black) : Text(t).underline().font(.title3).foregroundColor(.black)
                     }
@@ -114,7 +116,7 @@ struct Expenditures: View {
                         VStack {
                             if (viewInt != 4) {
                                 HStack {
-                                    NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, fbHandler: fbHandler)) {
+                                    NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, fbHandler: fbHandler)) {
                                         Spacer()
                                         ZStack {
                                             RoundedRectangle(cornerRadius: 5).fill(Color("IncomeColor")).frame(width: width / 1.2, height: height / 9, alignment: .center)
@@ -132,13 +134,29 @@ struct Expenditures: View {
                                     }
                                 }
                             } else {
-                                ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, fbHandler: fbHandler)
+                                ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, fbHandler: fbHandler)
                             }
                             
                         }
                     }.frame(height: height, alignment: .topLeading)
                 }
             }
+        }
+    }
+    
+    func refresh(t: Int) {
+        if (t == 0) {
+            self.expenseList = self.fbHandler.expenseList
+        } else if (t == 5) {
+            self.expenseList = self.fbHandler.reconList
+        } else if (t == 2) {
+            self.expenseList = self.fbHandler.incomeList
+        } else if (t == 3) {
+            self.expenseList = self.fbHandler.reconList.filter({$0.isIncome == true})
+        } else if (t == 4) {
+            self.expenseList = self.fbHandler.expenseList.filter({$0.category == "Transfer"})
+        } else if (t == 1) {
+            self.expenseList = self.fbHandler.reconList.filter({$0.isIncome == true}) +  self.fbHandler.incomeList
         }
     }
     
@@ -189,9 +207,7 @@ struct Expenditures: View {
         } else {
             temp = initial
         }
-        print("init: ", initial.map({$0.name}))
-        print("filtered: " , temp.map({$0.name}))
-        return temp
+        return temp.sorted(by: {$0.convDate > $1.convDate})
         
     }
     
@@ -202,22 +218,21 @@ struct ExpenseListByCategory: View {
     @State var expenses: [MTransaction]
     @State var width: CGFloat
     @State var height: CGFloat
-    @State var tempAccounts : [String]
-    @State var tempCategories : [String]
-    @State var tempIncome : [String]
+   
     @StateObject var fbHandler : FirebaseHandler
     
     var body: some View {
-        //ScrollView {
+        ScrollView {
         VStack(spacing: 0) {
             category != "Transfer" ?
                 Text("Transactions for \n" + category).font(.title2).padding(15).textCase(.uppercase).foregroundColor(.black).multilineTextAlignment(.center) : nil
             ForEach(expenses, id: \.self) { i in
-                showItems(exp: i, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, fbHandler: fbHandler)
+                showItems(exp: i, width: width, height: height, fbHandler: fbHandler)
             }
             Spacer()
             //  }
         }.navigationBarHidden(false)
+    }
     }
 }
 
@@ -227,9 +242,7 @@ struct showItems: View {
     @State var editChoice: Bool = false
     @State var width: CGFloat
     @State var height: CGFloat
-    @State var tempAccounts : [String]
-    @State var tempCategories : [String]
-    @State var tempIncome : [String]
+ 
     @StateObject var fbHandler : FirebaseHandler
     @State var value: Double! = 0.0
     
@@ -241,6 +254,7 @@ struct showItems: View {
     }()
     
     var body: some View {
+
         ZStack {
             exp.isIncome ? RoundedRectangle(cornerRadius: 5).fill(Color("IncomeColor")).frame(width: width / 1.1, height: height / 10, alignment: .center) :
                 RoundedRectangle(cornerRadius: 5).fill(Color("BoxColor")).frame(width: width / 1.1, height: height / 10, alignment: .center)
@@ -281,7 +295,7 @@ struct showItems: View {
                     Text("Account of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     Spacer()
                     Picker(exp.account, selection: $exp.account) {
-                        ForEach(tempAccounts, id: \.self) {
+                        ForEach(fbHandler.tempAccount, id: \.self) {
                             Text($0)
                         }
                     }.pickerStyle(MenuPickerStyle()).frame(minWidth: 0, maxWidth: width / 2)
@@ -292,7 +306,7 @@ struct showItems: View {
                     Spacer()
                     Picker(exp.category, selection: $exp.category) {
                         exp.category == "" ? Text(exp.category) : nil
-                        ForEach(tempCategories, id: \.self) {
+                        ForEach(fbHandler.tempCategories, id: \.self) {
                             Text($0)
                         }
                     }.pickerStyle(MenuPickerStyle()).frame(minWidth: 0, maxWidth: width / 2)
@@ -302,7 +316,7 @@ struct showItems: View {
                     Spacer()
                     Picker(exp.incomeType, selection: $exp.incomeType) {
                         exp.incomeType == "" ? Text(exp.incomeType) : nil
-                        ForEach(tempIncome, id: \.self) {
+                        ForEach(fbHandler.tempIncome, id: \.self) {
                             Text($0)
                         }
                     }.pickerStyle(MenuPickerStyle())
@@ -345,7 +359,11 @@ struct showItems: View {
                     
                 }
             }
+        
         }.frame(width: width / 1.2, height: height / 9, alignment: .center).onAppear(perform: {self.value = abs(exp.value)})
+    
+        
+        
     }
 }
 

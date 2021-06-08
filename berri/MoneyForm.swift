@@ -136,6 +136,7 @@ struct ConfirmAccount: View {
                     self.addItem.date = ""
                     self.addItem.incomeType = ""
                     self.addItem.category = ""
+                    self.value = 0.0
                 }) {
                     Text("Clear").font(.title2)
                 }
@@ -180,6 +181,7 @@ struct ConfirmAccount: View {
                             self.addItem.date = ""
                             self.addItem.incomeType = ""
                             self.addItem.category = ""
+                            self.value = 0.0
                         },
                         secondaryButton: .cancel()
                     )

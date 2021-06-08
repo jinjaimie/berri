@@ -10,19 +10,16 @@ import Firebase
 import SwiftUIKit
 
 struct CalendarView: View {
-    @State var tempAccounts = [String]()
-    @State var tempCategories = [String]()
-    @State var tempIncome = [String]()
+
     @State var expenseList = [MTransaction]()
-    
-    @State var expenses : [MTransaction]
+   
     @State var timeFilter = "MONTH"
-    @State var reconList : [MTransaction]
     @State var curView = ["All Expenditures (E)", "All Income (P+I)", "True Income (I)", "Payback Only", "Transfer", "Reconed Expenses (E-P)"]
     @State var viewInt = 0
-    @State var incomeList : [MTransaction]
+    
     @State var width: CGFloat
     @State var height: CGFloat
+    
     @StateObject var fbHandler: FirebaseHandler
     
     @State var type: String = "By Month"
@@ -41,11 +38,11 @@ struct CalendarView: View {
                 VStack {
                     ForEach(getYearRange(), id: \.self) { year in
                         let filterArr = filteredYear(year: year)
-                        let choose = self.tempCategories + self.tempIncome
+                        let choose = fbHandler.tempCategories + fbHandler.tempIncome
                         if (type == "By Month") {
                             NavigationLink(destination: ByMonth(arr: filterArr, width: width, height: height) ) {
                                 ZStack {
-                                    RoundedRectangle(cornerRadius: 5).fill(Color("MainColor")).frame(width: width / 1.2, height: (height / CGFloat(10)) * 2.5, alignment: .center)
+                                    RoundedRectangle(cornerRadius: 5).fill(Color("MainColor")).frame(width: width / 1.2, height: (height / CGFloat(10)) * 2, alignment: .center)
                                     VStack {
                                         Text(String(year)).bold().foregroundColor(.black)
                                         Text("$" + String(format:  "%.2f", filterArr.map({$0.value}).reduce(0,+))).foregroundColor(.black)
@@ -70,7 +67,7 @@ struct CalendarView: View {
     }
     
     func getYearRange() -> [Int] {
-        let total = (reconList + incomeList).filter({$0.category != "Transfer"}).map({$0.convDate}).sorted(by: {$0 > $1})
+        let total = (fbHandler.reconList + fbHandler.incomeList).filter({$0.category != "Transfer"}).map({$0.convDate}).sorted(by: {$0 > $1})
         let last : Date! = total.last
         let first : Date! = total.first
         let dateFormatter = DateFormatter()
@@ -84,8 +81,8 @@ struct CalendarView: View {
     func filteredYear(year: Int) -> [MTransaction] {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy"
-        let total = (reconList + incomeList).filter({dateFormatter.string(from: $0.convDate) == String(year)})
-        print(total.map({$0.convDate}))
+        let total = (fbHandler.reconList + fbHandler.incomeList).filter({dateFormatter.string(from: $0.convDate) == String(year)})
+       // print(total.map({$0.convDate}))
         return total
     }
     
@@ -105,7 +102,7 @@ struct ByMonth : View {
         ScrollView {
             ForEach(months, id: \.self) { m in
                 let filterArr = filteredMonths(month: m)
-                NavigationLink(destination: ExpenseListByCategory(category: m, expenses: filterArr, width: width, height: height, tempAccounts: handler.tempAccount, tempCategories: handler.tempCategories, tempIncome: handler.tempIncome, fbHandler: handler)) {
+                NavigationLink(destination: ExpenseListByCategory(category: m, expenses: filterArr, width: width, height: height, fbHandler: handler)) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 5).fill(Color("MainColor")).frame(width: width / 1.1, height: (height / CGFloat(10)) * 2, alignment: .center)
                         VStack {
@@ -121,8 +118,7 @@ struct ByMonth : View {
     func filteredMonths(month: String) -> [MTransaction] {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy"
-        var total = self.arr.filter({Calendar.current.component(.month, from: $0.convDate) == months.index(of: month)})
-        print(total.map({$0.convDate}))
+        var total = self.arr.filter({Calendar.current.component(.month, from: $0.convDate) == (months.index(of: month)! - 1)})
         return total
     }
 }
@@ -137,12 +133,13 @@ struct ByCategorySimple : View {
     @StateObject var handler = FirebaseHandler()
     
     var body: some View {
+        ScrollView{
         VStack {
             ForEach (chosenList, id: \.self) { c in
                 let curArr = arr.filter({$0.category == c || $0.incomeType == c})
                 VStack {
                     HStack {
-                        NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: handler.tempAccount, tempCategories: handler.tempCategories, tempIncome: handler.tempIncome, fbHandler: handler)) {
+                        NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, fbHandler: handler)) {
                             Spacer()
                             ZStack {
                                 RoundedRectangle(cornerRadius: 5).fill(Color("IncomeColor")).frame(width: width / 1.2, height: height / 9, alignment: .center)
@@ -163,6 +160,6 @@ struct ByCategorySimple : View {
                 }
             }
         }
-        
+        }
     }
 }
