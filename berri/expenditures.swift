@@ -34,7 +34,7 @@ struct Expenditures: View {
                         self.expenseList = self.expenses
                         self.viewInt = 0
                         self.chosenList = self.tempCategories
-                       
+                        
                     }) {
                         Text(curView[0])
                     }
@@ -42,8 +42,8 @@ struct Expenditures: View {
                         self.expenseList = self.reconList
                         self.viewInt = 5
                         self.chosenList = self.tempCategories
-                        print("Hi recon 1: ", self.reconList.map({$0.name}))
-
+                        // print("Hi recon 1: ", self.reconList.map({$0.name}))
+                        
                     }) {
                         Text(curView[5])
                     }
@@ -51,8 +51,8 @@ struct Expenditures: View {
                         self.expenseList = self.reconList.filter({$0.isIncome == true}) +  self.incomeList
                         self.viewInt = 1
                         self.chosenList = self.tempCategories + self.tempIncome
-                        print("Hi recon 2 : ",  self.reconList.map({$0.name}))
-                       
+                        //   print("Hi recon 2 : ",  self.reconList.map({$0.name}))
+                        
                     }) {
                         Text(curView[1])
                     }
@@ -67,8 +67,8 @@ struct Expenditures: View {
                         self.expenseList = self.reconList.filter({$0.isIncome == true})
                         self.viewInt = 3
                         self.chosenList = self.tempCategories
-                        print("Hi recon income only: ",  self.reconList.map({$0.name}))
-
+                        //   print("Hi recon income only: ",  self.reconList.map({$0.name}))
+                        
                     }) {
                         Text(curView[3])
                     }
@@ -89,11 +89,15 @@ struct Expenditures: View {
             
             HStack {
                 ForEach (times, id: \.self) { t in
-                    Button {self.timeFilter = t} label: {
+                    Button (action: {
+                        self.timeFilter = t
+                    }) {
                         (t != timeFilter) ? Text(t).font(.title3).foregroundColor(.black) : Text(t).underline().font(.title3).foregroundColor(.black)
                     }
                 }
             }
+        
+            
             VStack(spacing: 5) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 5).fill(Color("ExtraColor")).frame(width: width / 1.2, height: (height / CGFloat(10)) * 1.5, alignment: .center)
@@ -150,8 +154,6 @@ struct Expenditures: View {
         
         if (cat == "" && exp[0].category != "Transfer") {
             initial = exp.filter({($0.category != "Transfer" && $0.incomeType == "") || ($0.incomeType != "Transfer" && $0.category == "")})
-           
-            
         } else if (cat == "" && exp[0].category == "Transfer") {
             initial = exp
         }
@@ -163,8 +165,6 @@ struct Expenditures: View {
         if (cat != "" && (self.viewInt <= 1 || self.viewInt >= 3)) {
             initial += exp.filter({$0.category == cat})
         }
-        
-        
         
         if (self.timeFilter == "DAY") {
             for i in initial {
@@ -189,15 +189,13 @@ struct Expenditures: View {
         } else {
             temp = initial
         }
-        //print("init: ", initial.map({$0.name}))
-        //print("filtered: " , temp.map({$0.name}))
+        print("init: ", initial.map({$0.name}))
+        print("filtered: " , temp.map({$0.name}))
         return temp
         
     }
     
 }
-
-
 
 struct ExpenseListByCategory: View {
     @State var category: String
@@ -211,14 +209,14 @@ struct ExpenseListByCategory: View {
     
     var body: some View {
         //ScrollView {
-            VStack(spacing: 0) {
-                category != "Transfer" ?
-                    Text("Transactions for \n" + category).font(.title2).padding(15).textCase(.uppercase).foregroundColor(.black).multilineTextAlignment(.center) : nil
-                ForEach(expenses, id: \.self) { i in
-                    showItems(exp: i, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, fbHandler: fbHandler)
-                }
-                Spacer()
-          //  }
+        VStack(spacing: 0) {
+            category != "Transfer" ?
+                Text("Transactions for \n" + category).font(.title2).padding(15).textCase(.uppercase).foregroundColor(.black).multilineTextAlignment(.center) : nil
+            ForEach(expenses, id: \.self) { i in
+                showItems(exp: i, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, fbHandler: fbHandler)
+            }
+            Spacer()
+            //  }
         }.navigationBarHidden(false)
     }
 }
@@ -234,7 +232,7 @@ struct showItems: View {
     @State var tempIncome : [String]
     @StateObject var fbHandler : FirebaseHandler
     @State var value: Double! = 0.0
-
+    
     
     static let itemDateFormat: DateFormatter = {
         let formatter = DateFormatter()
@@ -245,11 +243,11 @@ struct showItems: View {
     var body: some View {
         ZStack {
             exp.isIncome ? RoundedRectangle(cornerRadius: 5).fill(Color("IncomeColor")).frame(width: width / 1.1, height: height / 10, alignment: .center) :
-                            RoundedRectangle(cornerRadius: 5).fill(Color("BoxColor")).frame(width: width / 1.1, height: height / 10, alignment: .center)
-
+                RoundedRectangle(cornerRadius: 5).fill(Color("BoxColor")).frame(width: width / 1.1, height: height / 10, alignment: .center)
+            
             HStack {
                 Button(action: {self.clicked.toggle()
-
+                    
                 }) {
                     Text(exp.name).foregroundColor(.black)
                     Spacer()
@@ -275,9 +273,9 @@ struct showItems: View {
                 HStack {
                     Text("Value of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     Spacer()
-
+                    
                     CurrencyTextField("Amount", value: self.$value, alwaysShowFractions: false, numberOfDecimalPlaces: 2, currencySymbol: "US$").font(.largeTitle).multilineTextAlignment(TextAlignment.center)
-                    //TextField(String(abs(exp.value)), value: $exp.value, formatter: NumberFormatter()).border(Color.black).padding(5)
+                    
                 }.frame(width: width/1.2)
                 HStack {
                     Text("Account of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
@@ -312,37 +310,40 @@ struct showItems: View {
                 Spacer()
                 HStack {
                     Spacer()
-                Button(action: {
-
-
-                    let ref = Database.database().reference().child(Auth.auth().currentUser!.uid)
-
-                    exp.date = showItems.itemDateFormat.string(from: exp.convDate)
-                    print("is submitting...")
-                    print(exp.isIncome, exp.id)
-                    exp.isIncome ?
-                        ref.child("income").child(exp.id).setValue(["account": exp.account, "category": exp.category, "date": exp.date , "incomeType": exp.incomeType, "name": exp.name, "value": Double(abs(value))]) :
-                        ref.child("expenditures").child(exp.id).setValue(["account": exp.account, "category": exp.category, "date": exp.date, "name": exp.name, "value": Double(-abs(value))])
-                    self.clicked.toggle()
-                    fbHandler.loadData()
-                }) {
-                    ZStack {
-                        Text("Submit").font(.title2)
+                    Button(action: {
+                        let ref = Database.database().reference()
+                        exp.isIncome ? ref.child("income").child(exp.id).removeValue() : ref.child("expenditures").child(exp.id).removeValue()
+                        self.clicked.toggle()
+                        fbHandler.loadData()
+                    }) {
+                        ZStack {
+                            Text("Delete").font(.title2)
+                        }
                     }
-                }
                     Spacer()
-                Button(action: {
-                    let ref = Database.database().reference()
-                    exp.isIncome ? ref.child("income").child(exp.id).removeValue() : ref.child("expenditures").child(exp.id).removeValue()
-                    self.clicked.toggle()
-                    fbHandler.loadData()
-                }) {
-                    ZStack {
-                        Text("Delete").font(.title2)
+                    Button(action: {self.clicked.toggle()}) {
+                        Text("Close").font(.title2)
                     }
-                }
                     Spacer()
-            }
+                    Button(action: {
+                        let ref = Database.database().reference().child(Auth.auth().currentUser!.uid)
+                        
+                        exp.date = showItems.itemDateFormat.string(from: exp.convDate)
+                        print("is submitting...")
+                        print(exp.isIncome, exp.id)
+                        exp.isIncome ?
+                            ref.child("income").child(exp.id).setValue(["account": exp.account, "category": exp.category, "date": exp.date , "incomeType": exp.incomeType, "name": exp.name, "value": Double(abs(value))]) :
+                            ref.child("expenditures").child(exp.id).setValue(["account": exp.account, "category": exp.category, "date": exp.date, "name": exp.name, "value": Double(-abs(value))])
+                        self.clicked.toggle()
+                        fbHandler.loadData()
+                    }) {
+                        ZStack {
+                            Text("Submit").font(.title2)
+                        }
+                    }
+                    Spacer()
+                    
+                }
             }
         }.frame(width: width / 1.2, height: height / 9, alignment: .center).onAppear(perform: {self.value = abs(exp.value)})
     }

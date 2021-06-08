@@ -17,6 +17,7 @@
 		C798FAFA265F415F00EC2936 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C798FAF9265F415F00EC2936 /* Preview Assets.xcassets */; };
 		C798FB04265F430A00EC2936 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C798FB03265F430A00EC2936 /* GoogleService-Info.plist */; };
 		DB06D194266EF0DA00BDD281 /* calc.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB06D193266EF0DA00BDD281 /* calc.swift */; };
+		DB06D196266FEB1000BDD281 /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB06D195266FEB1000BDD281 /* Calendar.swift */; };
 		DB2B46352665E19200755D7E /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2B46342665E19200755D7E /* FormView.swift */; };
 		DB8645A526633562005625F7 /* expenditures.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8645A426633562005625F7 /* expenditures.swift */; };
 		DB8645A926634024005625F7 /* models.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8645A826634024005625F7 /* models.swift */; };
@@ -39,6 +40,7 @@
 		C798FB03265F430A00EC2936 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CA1C8322DFE7B63A591C1F5E /* Pods_berri.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_berri.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB06D193266EF0DA00BDD281 /* calc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = calc.swift; sourceTree = "<group>"; };
+		DB06D195266FEB1000BDD281 /* Calendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calendar.swift; sourceTree = "<group>"; };
 		DB2B46342665E19200755D7E /* FormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
 		DB8645A426633562005625F7 /* expenditures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = expenditures.swift; sourceTree = "<group>"; };
 		DB8645A826634024005625F7 /* models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = models.swift; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 				DB2B46342665E19200755D7E /* FormView.swift */,
 				DB8645AA26658927005625F7 /* total.swift */,
 				DB8645A426633562005625F7 /* expenditures.swift */,
+				DB06D195266FEB1000BDD281 /* Calendar.swift */,
 				DB8645AC2665B3F0005625F7 /* write.swift */,
 				DB06D193266EF0DA00BDD281 /* calc.swift */,
 				C798FAF6265F415F00EC2936 /* Assets.xcassets */,
@@ -252,6 +255,7 @@
 				DB06D194266EF0DA00BDD281 /* calc.swift in Sources */,
 				C798FAF3265F415D00EC2936 /* berriApp.swift in Sources */,
 				C71E1E61266960F50052697F /* AuthView.swift in Sources */,
+				DB06D196266FEB1000BDD281 /* Calendar.swift in Sources */,
 				DB8645A526633562005625F7 /* expenditures.swift in Sources */,
 				C71E1E5B266761A00052697F /* AccountView.swift in Sources */,
 				DB8645A926634024005625F7 /* models.swift in Sources */,

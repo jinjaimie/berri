@@ -54,6 +54,11 @@ struct ContentView: View {
                 .tag(2)
                 
                 ZStack {
+                    CalendarView(tempAccounts: firebaseHandler.tempAccount, tempCategories: firebaseHandler.tempCategories, tempIncome: firebaseHandler.tempIncome, expenseList: firebaseHandler.expenseList, expenses: firebaseHandler.expenseList, reconList: firebaseHandler.reconList, incomeList: firebaseHandler.incomeList, width: m.size.width, height: m.size.height, fbHandler: firebaseHandler, chosenList : firebaseHandler.tempCategories)
+                }.tabItem { Label("Calendar", systemImage: "calendar").foregroundColor(.white) }
+                .tag(2)
+                
+                ZStack {
                     ConfirmAccount(width: m.size.width, height: m.size.height, accounts: firebaseHandler.tempAccount, categories: firebaseHandler.tempCategories, incomes: firebaseHandler.tempIncome)
                 }.tabItem {
                     Label("Add", systemImage: "plus").foregroundColor(.black)
@@ -217,8 +222,6 @@ class FirebaseHandler: ObservableObject {
         var accounts = Dictionary<String, Double>()
         if let snapshots = snapshot.children.allObjects as? [DataSnapshot] {
             for snap in snapshots {
-//                if let postDictionary = snap.value as? Dictionary<String, AnyObject> {
-//                    items[snap.key] = postDictionary["amount"] as? Double
                 if let account = snap.value as? NSDictionary {
                     accounts[snap.key] = account["amount"] as? Double
                 }
