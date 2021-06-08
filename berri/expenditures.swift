@@ -144,6 +144,10 @@ struct Expenditures: View {
         var temp : [MTransaction] = []
         let date1 = Date()
         
+        if exp.count == 0 {
+            return initial
+        }
+        
         if (cat == "" && exp[0].category != "Transfer") {
             initial = exp.filter({($0.category != "Transfer" && $0.incomeType == "") || ($0.incomeType != "Transfer" && $0.category == "")})
            
@@ -245,7 +249,7 @@ struct showItems: View {
 
             HStack {
                 Button(action: {self.clicked.toggle()
-                    newValue = exp.value
+
                 }) {
                     Text(exp.name).foregroundColor(.black)
                     Spacer()
@@ -309,8 +313,10 @@ struct showItems: View {
                 HStack {
                     Spacer()
                 Button(action: {
-                    exp.value = newValue!
-                    let ref = Database.database().reference()
+
+
+                    let ref = Database.database().reference().child(Auth.auth().currentUser!.uid)
+
                     exp.date = showItems.itemDateFormat.string(from: exp.convDate)
                     print("is submitting...")
                     print(exp.isIncome, exp.id)

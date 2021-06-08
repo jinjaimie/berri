@@ -92,6 +92,8 @@ struct AccountForm: View {
                     }
                 }.padding(.horizontal, geom.size.width*0.1)
             }
+        }.onAppear {
+            ref = Database.database().reference().child(Auth.auth().currentUser!.uid)
         }
     }
 }
@@ -163,6 +165,8 @@ struct CategoryForm: View {
                     }
                 }.padding(geom.size.width*0.1)
             }
+        }.onAppear {
+            ref = Database.database().reference().child(Auth.auth().currentUser!.uid)
         }
     }
 }

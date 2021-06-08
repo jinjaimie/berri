@@ -18,8 +18,14 @@ struct ContentView: View {
     
     @StateObject var firebaseHandler = FirebaseHandler()
 
+
 //    var backgroundColor: UIColor? = UIColor(red: 0.937, green: 0.824, blue: 0.827, alpha: 1)
 //        var titleColor: Color = Color(red: 0.64, green: 0.36, blue: 0.25)
+
+    @State var presentAuth = (Auth.auth().currentUser == nil)
+    
+    var backgroundColor: UIColor? = UIColor(red: 0.937, green: 0.824, blue: 0.827, alpha: 1)
+        var titleColor: Color = Color(red: 0.64, green: 0.36, blue: 0.25)
     let coloredAppearance = UINavigationBarAppearance()
    
     init() {
@@ -31,8 +37,7 @@ struct ContentView: View {
           //  UINavigationBar.appearance().titleTextAttributes = [
              //   .font : UIFont(name: "HelveticaNeue-Thin")!]
     
-    
-        }
+    }
     
     var body: some View {
         GeometryReader { m in
@@ -59,11 +64,13 @@ struct ContentView: View {
                 }.tabItem { Label("Tips", systemImage: "candybarphone") }
                 .tag(4)
                 ZStack {
-                    SettingView()
+                    SettingView(presentAuth: $presentAuth)
                 }.tabItem { Label("Settings", systemImage: "gear") }
                 .tag(4)
-            }.accentColor(Color("ExtraColor")).onAppear(perform: firebaseHandler.loadData)
-            .toolbar {
+
+            }.accentColor(Color("ExtraColor")).onAppear(perform: firebaseHandler.authenticate)
+
+        .toolbar {
                 ToolbarItem(placement: .principal) {
                     VStack {
                         Spacer()
@@ -83,15 +90,21 @@ struct ContentView: View {
                 UITabBar.appearance().barTintColor = main
                 UITabBar.appearance().unselectedItemTintColor = accent
             }
-        }.navigationViewStyle(StackNavigationViewStyle())
-        .navigationBarHidden(true)
+
+            .fullScreenCover(isPresented: $presentAuth) {
+                AuthView()
+            }
+        }.navigationViewStyle(StackNavigationViewStyle()).navigationBarHidden(false)
         .navigationBarTitle(Text("Home"))
         .edgesIgnoringSafeArea([.top, .bottom])
+
     }
 }
 }
 
 struct SettingView: View {
+    @Binding var presentAuth: Bool
+    
     var body: some View {
         VStack (spacing: 5) {
             NavigationLink(
@@ -106,6 +119,14 @@ struct SettingView: View {
                 destination: CategoryForm(t: "incomeTypes")) {
                 Text("Add an income type").padding()
             }
+            Button {
+                try! Auth.auth().signOut()
+                presentAuth = true
+                print(Auth.auth().currentUser)
+            } label: {
+                Text("Sign Out").padding()
+            }
+
         }
     }
     
@@ -120,37 +141,64 @@ class FirebaseHandler: ObservableObject {
     @Published var reconList = [MTransaction]()
     @Published var tempIncome = [String]()
     
+    func authenticate() {
+        Auth.auth().addStateDidChangeListener { auth, user in
+            if let _ = user {
+                self.loadData()
+            } else {
+                self.tempAccounts = Dictionary<String, Double>()
+                self.tempAccount = [String]()
+                self.tempCategories = [String]()
+                self.expenseList = [MTransaction]()
+                self.incomeList = [MTransaction]()
+                self.reconList = [MTransaction]()
+                self.tempIncome = [String]()
+            }
+        }
+    }
+    
     func loadData() {
+        let userID = Auth.auth().currentUser!.uid
         reconList = []
         let ref = Database.database().reference()
-//         ref.child("accounts").observeSingleEvent(of: .value) { snapshot in
-//             self.tempAccounts = self.makeAccounts(from: snapshot)
-//         }
-        ref.child("expenseTypes").observeSingleEvent(of: .value) { snapshot in
-            self.tempCategories = self.makeItems(from: snapshot).sorted(by: {$0 < $1})
+
+        ref.child(userID).child("expenseTypes").observeSingleEvent(of: .value) { snapshot in
+            if snapshot.exists() {
+                self.tempCategories = self.makeItems(from: snapshot).sorted(by: {$0 < $1})
+            }
         }
-        ref.child("incomeTypes").observeSingleEvent(of: .value) { snapshot in
-            self.tempIncome = self.makeItems(from: snapshot).sorted(by: {$0 < $1})
+        ref.child(userID).child("incomeTypes").observeSingleEvent(of: .value) { snapshot in
+            if snapshot.exists() {
+                self.tempIncome = self.makeItems(from: snapshot).sorted(by: {$0 < $1})
+            }
         }
-        ref.child("expenditures").observeSingleEvent(of: .value) { snapshot in
-            let temp = self.createTransactions(from: snapshot, isIncome: false)
-            self.expenseList = temp.sorted(by: {$0.convDate > $1.convDate})
-            // print("Expenses: ", temp.map({$0.name}))
+        ref.child(userID).child("expenditures").observeSingleEvent(of: .value) { snapshot in
+            if snapshot.exists() {
+                let temp = self.createTransactions(from: snapshot, isIncome: false)
+                self.expenseList = temp.sorted(by: {$0.convDate > $1.convDate})
+                // print("Expenses: ", temp.map({$0.name}))
+            }
         }
-        ref.child("income").observeSingleEvent(of: .value) { snapshot in
-            let temp = self.createTransactions(from: snapshot, isIncome: true)
-            self.incomeList = temp.sorted(by: {$0.convDate > $1.convDate})
-           // print("Incomes: ", temp.map({$0.name}))
+        ref.child(userID).child("income").observeSingleEvent(of: .value) { snapshot in
+            if snapshot.exists() {
+                let temp = self.createTransactions(from: snapshot, isIncome: true)
+                self.incomeList = temp.sorted(by: {$0.convDate > $1.convDate})
+                // print("Incomes: ", temp.map({$0.name}))
+            }
         }
 
-        ref.child("accounts").observeSingleEvent(of: .value) { snapshot in
-            let temp = self.makeAccounts(from: snapshot)
-            self.tempAccount = Array(temp.keys).sorted(by: {$0 < $1})
-            self.tempAccounts = temp
+
+        ref.child(userID).child("accounts").observeSingleEvent(of: .value) { snapshot in
+            if snapshot.exists() {
+                let temp = self.makeAccounts(from: snapshot)
+                self.tempAccount = Array(temp.keys).sorted(by: {$0 < $1})
+                self.tempAccounts = temp
+            }
+     
         }
-        print("is called: ", self.expenseList.map({$0.name}))
-        print("is called income: ", self.incomeList.map({$0.name}))
-        print("is called recon: ", self.reconList.map({$0.name}))
+//        print("is called: ", self.expenseList.map({$0.name}))
+//        print("is called income: ", self.incomeList.map({$0.name}))
+//        print("is called recon: ", self.reconList.map({$0.name}))
     }
     
     func makeItems(from snapshot: DataSnapshot) -> [String] {
@@ -209,12 +257,11 @@ class FirebaseHandler: ObservableObject {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            ContentView()
-        }
-      //  ConfirmAccount(width: CGFloat(360), height: CGFloat(800), accounts: ["Checking", "Savings", "Other", "Another"], categories: ["Test1", "Test2", "Test4", "Test5", "Test6"])
-        
-    }
-}
+
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SettingView()
+//      //  ConfirmAccount(width: CGFloat(360), height: CGFloat(800), accounts: ["Checking", "Savings", "Other", "Another"], categories: ["Test1", "Test2", "Test4", "Test5", "Test6"])
+//        
+//    }
+//}

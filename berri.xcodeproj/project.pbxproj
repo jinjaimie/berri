@@ -10,6 +10,7 @@
 		2298BB462665D84B00BFC9D8 /* SwiftUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2298BB452665D84B00BFC9D8 /* SwiftUIKit */; };
 		2298BB492667022700BFC9D8 /* MoneyForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298BB482667022600BFC9D8 /* MoneyForm.swift */; };
 		C71E1E5B266761A00052697F /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71E1E5A266761A00052697F /* AccountView.swift */; };
+		C71E1E61266960F50052697F /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71E1E60266960F50052697F /* AuthView.swift */; };
 		C798FAF3265F415D00EC2936 /* berriApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C798FAF2265F415D00EC2936 /* berriApp.swift */; };
 		C798FAF5265F415D00EC2936 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C798FAF4265F415D00EC2936 /* ContentView.swift */; };
 		C798FAF7265F415F00EC2936 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C798FAF6265F415F00EC2936 /* Assets.xcassets */; };
@@ -28,6 +29,7 @@
 		2298BB482667022600BFC9D8 /* MoneyForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyForm.swift; sourceTree = "<group>"; };
 		B72F694094BBA96BAD5C6C16 /* Pods-berri.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-berri.debug.xcconfig"; path = "Target Support Files/Pods-berri/Pods-berri.debug.xcconfig"; sourceTree = "<group>"; };
 		C71E1E5A266761A00052697F /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
+		C71E1E60266960F50052697F /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		C798FAEF265F415D00EC2936 /* berri.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = berri.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C798FAF2265F415D00EC2936 /* berriApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = berriApp.swift; sourceTree = "<group>"; };
 		C798FAF4265F415D00EC2936 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				C798FAF2265F415D00EC2936 /* berriApp.swift */,
 				2298BB482667022600BFC9D8 /* MoneyForm.swift */,
 				C798FAF4265F415D00EC2936 /* ContentView.swift */,
+				C71E1E60266960F50052697F /* AuthView.swift */,
 				C71E1E5A266761A00052697F /* AccountView.swift */,
 				DB2B46342665E19200755D7E /* FormView.swift */,
 				DB8645AA26658927005625F7 /* total.swift */,
@@ -248,6 +251,7 @@
 				2298BB492667022700BFC9D8 /* MoneyForm.swift in Sources */,
 				DB06D194266EF0DA00BDD281 /* calc.swift in Sources */,
 				C798FAF3265F415D00EC2936 /* berriApp.swift in Sources */,
+				C71E1E61266960F50052697F /* AuthView.swift in Sources */,
 				DB8645A526633562005625F7 /* expenditures.swift in Sources */,
 				C71E1E5B266761A00052697F /* AccountView.swift in Sources */,
 				DB8645A926634024005625F7 /* models.swift in Sources */,
