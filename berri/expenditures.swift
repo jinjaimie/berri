@@ -18,7 +18,7 @@ struct Expenditures: View {
     @Binding var incomeList : [MTransaction]
     @State var width: CGFloat
     @State var height: CGFloat
-    @StateObject var fbHandler: FirebaseHandler
+    @ObservedObject var fbHandler: FirebaseHandler
     
     
     @State var chosenList = [String]()
@@ -110,7 +110,7 @@ struct Expenditures: View {
                         VStack {
                             if (viewInt != 4) {
                                 HStack {
-                                    NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, fbHandler: fbHandler)) {
+                                    NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: $tempAccounts, tempCategories: $tempCategories, tempIncome: $tempIncome, fbHandler: fbHandler)) {
                                         Spacer()
                                         ZStack {
                                             RoundedRectangle(cornerRadius: 5).fill(Color("IncomeColor")).frame(width: width / 1.2, height: height / 9, alignment: .center)
@@ -128,7 +128,7 @@ struct Expenditures: View {
                                     }
                                 }
                             } else {
-                                ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, fbHandler: fbHandler)
+                                ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: $tempAccounts, tempCategories: $tempCategories, tempIncome: $tempIncome, fbHandler: fbHandler)
                             }
                             
                         }
@@ -204,10 +204,10 @@ struct ExpenseListByCategory: View {
     @State var expenses: [MTransaction]
     @State var width: CGFloat
     @State var height: CGFloat
-    @State var tempAccounts : [String]
-    @State var tempCategories : [String]
-    @State var tempIncome : [String]
-    @StateObject var fbHandler : FirebaseHandler
+    @Binding var tempAccounts : [String]
+    @Binding var tempCategories : [String]
+    @Binding var tempIncome : [String]
+    @ObservedObject var fbHandler : FirebaseHandler
     
     var body: some View {
         //ScrollView {
@@ -215,7 +215,7 @@ struct ExpenseListByCategory: View {
                 category != "Transfer" ?
                     Text("Transactions for \n" + category).font(.title2).padding(15).textCase(.uppercase).foregroundColor(.black).multilineTextAlignment(.center) : nil
                 ForEach(expenses, id: \.self) { i in
-                    showItems(exp: i, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, fbHandler: fbHandler)
+                    showItems(exp: i, width: width, height: height, tempAccounts: $tempAccounts, tempCategories: $tempCategories, tempIncome: $tempIncome, fbHandler: fbHandler)
                 }
                 Spacer()
           //  }
@@ -229,10 +229,10 @@ struct showItems: View {
     @State var editChoice: Bool = false
     @State var width: CGFloat
     @State var height: CGFloat
-    @State var tempAccounts : [String]
-    @State var tempCategories : [String]
-    @State var tempIncome : [String]
-    @StateObject var fbHandler : FirebaseHandler
+    @Binding var tempAccounts : [String]
+    @Binding var tempCategories : [String]
+    @Binding var tempIncome : [String]
+    @ObservedObject var fbHandler : FirebaseHandler
     @State var value: Double! = 0.0
 
     
