@@ -153,7 +153,8 @@ struct ConfirmAccount: View {
                 Spacer()
                 Button(action: {
                     self.confirm.toggle()
-                    confirmMessage = "Name: \(self.addItem.name)" + "\n Value: + \(self.value)" + "\n Date: \(self.addItem.convDate) \n Account In: \(self.addItem.accountIn) \n Account Out: \(self.addItem.accountOut) \n Category: \(self.addItem.category) \n Income Type: \(self.addItem.incomeType)"
+                    let tempConvDate = showItems.itemDateFormat.string(from: addItem.convDate)
+                    confirmMessage = "Name: \(self.addItem.name)" + "\n Value: + \(self.value!)" + "\n Date: \(tempConvDate) \n Account In: \(self.addItem.accountIn) \n Account Out: \(self.addItem.accountOut) \n Category: \(self.addItem.category) \n Income Type: \(self.addItem.incomeType)"
                 }) {
                     Text("Confirm").font(.title2)
                 }.alert(isPresented:$confirm) {
