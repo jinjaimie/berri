@@ -17,7 +17,7 @@ struct ContentView: View {
     
     @StateObject var firebaseHandler = FirebaseHandler()
 
-    @State private var isAuthenticated = Auth.auth().currentUser == nil
+    @State var presentAuth = (Auth.auth().currentUser == nil)
     
     var backgroundColor: UIColor? = UIColor(red: 0.937, green: 0.824, blue: 0.827, alpha: 1)
         var titleColor: Color = Color(red: 0.64, green: 0.36, blue: 0.25)
@@ -32,8 +32,7 @@ struct ContentView: View {
           //  UINavigationBar.appearance().titleTextAttributes = [
              //   .font : UIFont(name: "HelveticaNeue-Thin")!]
     
-    
-        }
+    }
     
     var body: some View {
         GeometryReader { m in
@@ -80,7 +79,7 @@ struct ContentView: View {
             .onAppear() {
                 UITabBar.appearance().barTintColor = main
             }
-            .fullScreenCover(isPresented: $isAuthenticated) {
+            .fullScreenCover(isPresented: $presentAuth) {
                 AuthView()
             }
         }.navigationViewStyle(StackNavigationViewStyle()).navigationBarHidden(false)

@@ -14,7 +14,7 @@ struct AccountForm: View {
     @State var amount:String = ""
     @State var showAlert = false
     @State var alertType = ""
-    @State var ref: DatabaseReference! = Database.database().reference().child(Auth.auth().currentUser!.uid)
+    @State var ref: DatabaseReference! = (Auth.auth().currentUser == nil) ? Database.database().reference() : Database.database().reference().child(Auth.auth().currentUser!.uid)
     
     var body: some View {
         GeometryReader { geom in
@@ -92,6 +92,8 @@ struct AccountForm: View {
                     }
                 }.padding(.horizontal, geom.size.width*0.1)
             }
+        }.onAppear {
+            ref = Database.database().reference().child(Auth.auth().currentUser!.uid)
         }
     }
 }
@@ -100,7 +102,7 @@ struct CategoryForm: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var name:String = ""
     @State var showAlert = false
-    @State var ref: DatabaseReference! = Database.database().reference().child(Auth.auth().currentUser!.uid)
+    @State var ref: DatabaseReference! = (Auth.auth().currentUser == nil) ? Database.database().reference() : Database.database().reference().child(Auth.auth().currentUser!.uid)
     
     var body: some View {
         GeometryReader { geom in
@@ -156,6 +158,8 @@ struct CategoryForm: View {
                     }
                 }.padding(geom.size.width*0.1)
             }
+        }.onAppear {
+            ref = Database.database().reference().child(Auth.auth().currentUser!.uid)
         }
     }
 }
