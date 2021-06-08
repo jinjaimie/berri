@@ -141,7 +141,7 @@ struct Expenditures: View {
                             
                         }
                     }.frame(height: height, alignment: .topLeading)
-                }.onAppear(perform: self.refresh(t: viewInt))
+                }
             }
         }
     }
