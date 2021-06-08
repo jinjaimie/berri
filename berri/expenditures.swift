@@ -8,14 +8,14 @@ struct Expenditures: View {
     @State var tempAccounts = [String]()
     @State var tempCategories = [String]()
     @State var tempIncome = [String]()
-    @State var expenseList = [Transaction]()
+    @State var expenseList = [MTransaction]()
     
-    @State var expenses : [Transaction]
+    @State var expenses : [MTransaction]
     @State var timeFilter = "MONTH"
-    @State var reconList : [Transaction]
+    @State var reconList : [MTransaction]
     @State var curView = ["All Expenditures (E)", "All Income (P+I)", "True Income (I)", "Payback Only", "Transfer", "Reconed Expenses (E-P)"]
     @State var viewInt = 0
-    @State var incomeList : [Transaction]
+    @State var incomeList : [MTransaction]
     @State var width: CGFloat
     @State var height: CGFloat
     @StateObject var fbHandler: FirebaseHandler
@@ -96,12 +96,12 @@ struct Expenditures: View {
             }
             VStack(spacing: 5) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.66, green: 0.66, blue: 0.99)).frame(width: width / 1.2, height: (height / CGFloat(10)) * 1.5, alignment: .center)
+                    RoundedRectangle(cornerRadius: 5).fill(Color("ExtraColor")).frame(width: width / 1.2, height: (height / CGFloat(10)) * 1.5, alignment: .center)
                     VStack {
                         Text(viewInt != 4 ? (viewInt == 0 ? ("Spent") : ( "Earned")) : ("Transfered")
-                                + " this " + timeFilter).font(.title3).foregroundColor(.black).textCase(.uppercase)
+                                + " this " + timeFilter).font(.title3).foregroundColor(.white).textCase(.uppercase)
                         
-                        Text("$" + String(format:  "%.2f", abs(filteredData(exp: expenseList) .map({$0.value}).reduce(0, +)))).foregroundColor(.black).font(.largeTitle).fontWeight(.heavy)
+                        Text("$" + String(format:  "%.2f", abs(filteredData(exp: expenseList) .map({$0.value}).reduce(0, +)))).foregroundColor(.white).font(.largeTitle).fontWeight(.heavy)
                     }
                 }
                 ScrollView(.vertical) {
@@ -113,7 +113,7 @@ struct Expenditures: View {
                                     NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: tempAccounts, tempCategories: tempCategories, tempIncome: tempIncome, fbHandler: fbHandler)) {
                                         Spacer()
                                         ZStack {
-                                            RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.66, green: 0.66, blue: 0.66)).frame(width: width / 1.2, height: height / 9, alignment: .center)
+                                            RoundedRectangle(cornerRadius: 5).fill(Color("IncomeColor")).frame(width: width / 1.2, height: height / 9, alignment: .center)
                                             HStack {
                                                 Text(c).foregroundColor(.black).textCase(.uppercase)
                                                 Spacer()
@@ -139,9 +139,9 @@ struct Expenditures: View {
     }
     
     
-    func filteredData(exp: [Transaction], cat: String = "") -> [Transaction] {
-        var initial : [Transaction] = []
-        var temp : [Transaction] = []
+    func filteredData(exp: [MTransaction], cat: String = "") -> [MTransaction] {
+        var initial : [MTransaction] = []
+        var temp : [MTransaction] = []
         let date1 = Date()
         
         if (cat == "" && exp[0].category != "Transfer") {
@@ -197,7 +197,7 @@ struct Expenditures: View {
 
 struct ExpenseListByCategory: View {
     @State var category: String
-    @State var expenses: [Transaction]
+    @State var expenses: [MTransaction]
     @State var width: CGFloat
     @State var height: CGFloat
     @State var tempAccounts : [String]
@@ -220,7 +220,7 @@ struct ExpenseListByCategory: View {
 }
 
 struct showItems: View {
-    @ObservedObject var exp: Transaction
+    @ObservedObject var exp: MTransaction
     @State var clicked: Bool = false
     @State var editChoice: Bool = false
     @State var width: CGFloat
@@ -230,6 +230,7 @@ struct showItems: View {
     @State var tempIncome : [String]
     @StateObject var fbHandler : FirebaseHandler
     @State var value: Double! = 0.0
+
     
     static let itemDateFormat: DateFormatter = {
         let formatter = DateFormatter()
@@ -239,14 +240,16 @@ struct showItems: View {
     
     var body: some View {
         ZStack {
-            exp.isIncome ? RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.66, green: 0.66, blue: 0.66)).frame(width: width / 1.1, height: height / 10, alignment: .center) :
-                            RoundedRectangle(cornerRadius: 5).fill(Color.init(red: 0.6196, green: 0.3647, blue: 0.5451)).frame(width: width / 1.1, height: height / 10, alignment: .center)
+            exp.isIncome ? RoundedRectangle(cornerRadius: 5).fill(Color("IncomeColor")).frame(width: width / 1.1, height: height / 10, alignment: .center) :
+                            RoundedRectangle(cornerRadius: 5).fill(Color("BoxColor")).frame(width: width / 1.1, height: height / 10, alignment: .center)
 
             HStack {
-                Button(action: {self.clicked.toggle()}) {
-                    Text(exp.name).foregroundColor(.white)
+                Button(action: {self.clicked.toggle()
+                    newValue = exp.value
+                }) {
+                    Text(exp.name).foregroundColor(.black)
                     Spacer()
-                    Text("$" + String(format: "%.2f", abs(exp.value))).foregroundColor(.white)
+                    Text("$" + String(format: "%.2f", abs(exp.value))).foregroundColor(.black)
                     Image(systemName: "chevron.right")
                 }
             }.frame(width: width / 1.4, height: height / 9, alignment: .center)
@@ -268,6 +271,7 @@ struct showItems: View {
                 HStack {
                     Text("Value of Transaction: ").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     Spacer()
+
                     CurrencyTextField("Amount", value: self.$value, alwaysShowFractions: false, numberOfDecimalPlaces: 2, currencySymbol: "US$").font(.largeTitle).multilineTextAlignment(TextAlignment.center)
                     //TextField(String(abs(exp.value)), value: $exp.value, formatter: NumberFormatter()).border(Color.black).padding(5)
                 }.frame(width: width/1.2)
@@ -305,6 +309,7 @@ struct showItems: View {
                 HStack {
                     Spacer()
                 Button(action: {
+                    exp.value = newValue!
                     let ref = Database.database().reference()
                     exp.date = showItems.itemDateFormat.string(from: exp.convDate)
                     print("is submitting...")
