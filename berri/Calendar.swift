@@ -25,19 +25,42 @@ struct CalendarView: View {
     @State var height: CGFloat
     @StateObject var fbHandler: FirebaseHandler
     
+    @State var type: String = "By Month"
+    @State var typeView: [String] = ["By Month", "By Categories"]
+    
     @State var chosenList = [String]()
     
     var body: some View {
-        ScrollView {
-            VStack {
-                ForEach(getYearRange(), id: \.self) { year in
-                    let filterArr = filteredYear(year: year)
-                    NavigationLink(destination: ByMonth(arr: filterArr, width: width, height: height)){
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 5).fill(Color("MainColor")).frame(width: width / 1.2, height: (height / CGFloat(10)) * 2.5, alignment: .center)
-                            VStack {
-                                Text(String(year)).bold().foregroundColor(.black)
-                                Text("$" + String(format:  "%.2f", filterArr.map({$0.value}).reduce(0,+))).foregroundColor(.black)
+        VStack {
+            Picker("Type", selection: $type) {
+                ForEach(typeView, id: \.self) {
+                    Text($0)
+                }
+            }.pickerStyle(SegmentedPickerStyle()).frame(width: width / 1.5)
+            ScrollView {
+                VStack {
+                    ForEach(getYearRange(), id: \.self) { year in
+                        let filterArr = filteredYear(year: year)
+                        let choose = self.tempCategories + self.tempIncome
+                        if (type == "By Month") {
+                            NavigationLink(destination: ByMonth(arr: filterArr, width: width, height: height) ) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 5).fill(Color("MainColor")).frame(width: width / 1.2, height: (height / CGFloat(10)) * 2.5, alignment: .center)
+                                    VStack {
+                                        Text(String(year)).bold().foregroundColor(.black)
+                                        Text("$" + String(format:  "%.2f", filterArr.map({$0.value}).reduce(0,+))).foregroundColor(.black)
+                                    }
+                                }
+                            }
+                        } else {
+                            NavigationLink(destination: ByCategorySimple(arr: filterArr, chosenList: choose, width: width, height: height) ) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 5).fill(Color("MainColor")).frame(width: width / 1.2, height: (height / CGFloat(10)) * 2, alignment: .center)
+                                    VStack {
+                                        Text(String(year)).bold().foregroundColor(.black)
+                                        Text("$" + String(format:  "%.2f", filterArr.map({$0.value}).reduce(0,+))).foregroundColor(.black)
+                                    }
+                                }
                             }
                         }
                     }
@@ -92,14 +115,54 @@ struct ByMonth : View {
                     }
                 }
             }
+        }
+    }
+    
+    func filteredMonths(month: String) -> [MTransaction] {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy"
+        var total = self.arr.filter({Calendar.current.component(.month, from: $0.convDate) == months.index(of: month)})
+        print(total.map({$0.convDate}))
+        return total
+    }
+}
+
+
+struct ByCategorySimple : View {
+    @State var arr : [MTransaction]
+    @State var chosenList : [String]
+    @State var width: CGFloat
+    @State var height: CGFloat
+    
+    @StateObject var handler = FirebaseHandler()
+    
+    var body: some View {
+        VStack {
+            ForEach (chosenList, id: \.self) { c in
+                let curArr = arr.filter({$0.category == c || $0.incomeType == c})
+                VStack {
+                    HStack {
+                        NavigationLink(destination: ExpenseListByCategory(category: c, expenses: curArr, width: width, height: height, tempAccounts: handler.tempAccount, tempCategories: handler.tempCategories, tempIncome: handler.tempIncome, fbHandler: handler)) {
+                            Spacer()
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 5).fill(Color("IncomeColor")).frame(width: width / 1.2, height: height / 9, alignment: .center)
+                                HStack {
+                                    Text(c).foregroundColor(.black).textCase(.uppercase)
+                                    Spacer()
+                                    HStack {
+                                        Text("$" +
+                                                String(format: "%.2f", abs(curArr.map({$0.value}).reduce(0, +)))).foregroundColor(.black).fontWeight(.medium)
+                                        Image(systemName: "chevron.right")
+                                    }
+                                }.frame(width: width / 1.4, height: height / 9, alignment: .center)
+                            }
+                            Spacer()
+                        }
+                    }
+                    
+                }
             }
         }
         
-        func filteredMonths(month: String) -> [MTransaction] {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy"
-            var total = self.arr.filter({Calendar.current.component(.month, from: $0.convDate) == months.index(of: month)})
-            print(total.map({$0.convDate}))
-            return total
-        }
     }
+}

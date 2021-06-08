@@ -102,7 +102,7 @@ struct Expenditures: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: 5).fill(Color("ExtraColor")).frame(width: width / 1.2, height: (height / CGFloat(10)) * 1.5, alignment: .center)
                     VStack {
-                        Text(viewInt != 4 ? (viewInt == 0 ? ("Spent") : ( "Earned")) : ("Transfered")
+                        Text(viewInt != 4 ? ((viewInt == 0 || viewInt == 5) ? ("Spent") : ( "Earned")) : ("Transfered")
                                 + " this " + timeFilter).font(.title3).foregroundColor(.white).textCase(.uppercase)
                         
                         Text("$" + String(format:  "%.2f", abs(filteredData(exp: expenseList) .map({$0.value}).reduce(0, +)))).foregroundColor(.white).font(.largeTitle).fontWeight(.heavy)
