@@ -31,7 +31,7 @@ struct CalendarView: View {
         ScrollView {
             VStack {
                 ForEach(getYearRange(), id: \.self) { year in
-                    var filterArr = filteredYear(year: year)
+                    let filterArr = filteredYear(year: year)
                     NavigationLink(destination: ByMonth(arr: filterArr, width: width, height: height)){
                         ZStack {
                             RoundedRectangle(cornerRadius: 5).fill(Color("MainColor")).frame(width: width / 1.2, height: (height / CGFloat(10)) * 2.5, alignment: .center)
@@ -47,9 +47,9 @@ struct CalendarView: View {
     }
     
     func getYearRange() -> [Int] {
-        var total = (reconList + incomeList).map({$0.convDate}).sorted(by: {$0 > $1}).filter({$0.category != "Transfer"})
-        var last : Date! = total.last
-        var first : Date! = total.first
+        let total = (reconList + incomeList).filter({$0.category != "Transfer"}).map({$0.convDate}).sorted(by: {$0 > $1})
+        let last : Date! = total.last
+        let first : Date! = total.first
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy"
         
@@ -61,7 +61,7 @@ struct CalendarView: View {
     func filteredYear(year: Int) -> [MTransaction] {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy"
-        var total = (reconList + incomeList).filter({dateFormatter.string(from: $0.convDate) == String(year)})
+        let total = (reconList + incomeList).filter({dateFormatter.string(from: $0.convDate) == String(year)})
         print(total.map({$0.convDate}))
         return total
     }
