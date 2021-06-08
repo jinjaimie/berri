@@ -53,10 +53,7 @@ struct ContentView: View {
                 }.tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill").foregroundColor(.white) }
                 .tag(2)
                 
-                ZStack {
-                    CalendarView(tempAccounts: firebaseHandler.tempAccount, tempCategories: firebaseHandler.tempCategories, tempIncome: firebaseHandler.tempIncome, expenseList: firebaseHandler.expenseList, expenses: firebaseHandler.expenseList, reconList: firebaseHandler.reconList, incomeList: firebaseHandler.incomeList, width: m.size.width, height: m.size.height, fbHandler: firebaseHandler, chosenList : firebaseHandler.tempCategories)
-                }.tabItem { Label("Calendar", systemImage: "calendar").foregroundColor(.white) }
-                .tag(2)
+                
                 
                 ZStack {
                     ConfirmAccount(width: m.size.width, height: m.size.height, accounts: firebaseHandler.tempAccount, categories: firebaseHandler.tempCategories, incomes: firebaseHandler.tempIncome)
@@ -65,11 +62,12 @@ struct ContentView: View {
                 }.tag(3)
 
                 ZStack {
-                    TipCalculator(width: m.size.width, height: m.size.height)
-                }.tabItem { Label("Tips", systemImage: "candybarphone") }
-                .tag(4)
+                    CalendarView(tempAccounts: firebaseHandler.tempAccount, tempCategories: firebaseHandler.tempCategories, tempIncome: firebaseHandler.tempIncome, expenseList: firebaseHandler.expenseList, expenses: firebaseHandler.expenseList, reconList: firebaseHandler.reconList, incomeList: firebaseHandler.incomeList, width: m.size.width, height: m.size.height, fbHandler: firebaseHandler, chosenList : firebaseHandler.tempCategories)
+                }.tabItem { Label("Calendar", systemImage: "calendar").foregroundColor(.white) }
+                .tag(2)
+                
                 ZStack {
-                    SettingView(presentAuth: $presentAuth)
+                    SettingView(presentAuth: $presentAuth, width: m.size.width, height: m.size.height)
                 }.tabItem { Label("Settings", systemImage: "gear") }
                 .tag(4)
 
@@ -109,7 +107,9 @@ struct ContentView: View {
 
 struct SettingView: View {
     @Binding var presentAuth: Bool
-    
+    @State var clicked: Bool = false
+    @State var width: CGFloat
+    @State var height: CGFloat
     var body: some View {
         VStack (spacing: 5) {
             NavigationLink(
@@ -123,6 +123,11 @@ struct SettingView: View {
             NavigationLink(
                 destination: CategoryForm(t: "incomeTypes")) {
                 Text("Add an income type").padding()
+            }
+            
+            NavigationLink(
+                destination: TipCalculator(width: width, height: height)) {
+                Text("Tip Calculator").padding()
             }
             Button {
                 try! Auth.auth().signOut()
