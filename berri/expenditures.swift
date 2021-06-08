@@ -92,7 +92,7 @@ struct Expenditures: View {
                 ForEach (times, id: \.self) { t in
                     Button (action: {
                         self.timeFilter = t
-                        self.refresh(t: viewInt)
+                        self.refreshData()
                     }) {
                         (t != timeFilter) ? Text(t).font(.title3).foregroundColor(.black) : Text(t).underline().font(.title3).foregroundColor(.black)
                     }
@@ -141,23 +141,23 @@ struct Expenditures: View {
                             
                         }
                     }.frame(height: height, alignment: .topLeading)
-                }
-            }
+                }.onAppear(perform: refreshData)
+            }.onAppear(perform: refreshData)
         }
     }
     
-    func refresh(t: Int) {
-        if (t == 0) {
+    func refreshData() {
+        if (self.viewInt == 0) {
             self.expenseList = self.fbHandler.expenseList
-        } else if (t == 5) {
+        } else if (self.viewInt == 5) {
             self.expenseList = self.fbHandler.reconList
-        } else if (t == 2) {
+        } else if (self.viewInt == 2) {
             self.expenseList = self.fbHandler.incomeList
-        } else if (t == 3) {
+        } else if (self.viewInt == 3) {
             self.expenseList = self.fbHandler.reconList.filter({$0.isIncome == true})
-        } else if (t == 4) {
+        } else if (self.viewInt == 4) {
             self.expenseList = self.fbHandler.expenseList.filter({$0.category == "Transfer"})
-        } else if (t == 1) {
+        } else if (self.viewInt == 1) {
             self.expenseList = self.fbHandler.reconList.filter({$0.isIncome == true}) +  self.fbHandler.incomeList
         }
     }
