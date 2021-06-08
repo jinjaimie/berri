@@ -54,7 +54,7 @@ struct ContentView: View {
                 .tag(2)
                 
                 ZStack {
-                    ConfirmAccount(width: m.size.width, height: m.size.height, accounts: firebaseHandler.tempAccount, categories: firebaseHandler.tempCategories, incomes: firebaseHandler.tempIncome)
+                    ConfirmAccount(width: m.size.width, height: m.size.height, accounts: $firebaseHandler.tempAccount, categories: $firebaseHandler.tempCategories, incomes: $firebaseHandler.tempIncome)
                 }.tabItem {
                     Label("Add", systemImage: "plus").foregroundColor(.black)
                 }.tag(3)

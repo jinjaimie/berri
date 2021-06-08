@@ -16,9 +16,9 @@ struct ConfirmAccount: View {
     @State var width: CGFloat
     @State var height: CGFloat
     @State var value : Double? = 0.0
-    @State var accounts: [String]
-    @State var categories: [String]
-    @State var incomes: [String]
+    @Binding var accounts: [String]
+    @Binding var categories: [String]
+    @Binding var incomes: [String]
     @ObservedObject private var addItem = NewTransaction()
     
     @State var category : String = ""
