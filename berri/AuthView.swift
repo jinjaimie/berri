@@ -20,21 +20,16 @@ struct AuthView: View {
         GeometryReader { m in
             NavigationView {
                 VStack(spacing: 16) {
-                    TextField("Email", text: $email)
-                    TextField("Password", text: $password)
+                    TextField("Email", text: $email).padding()
+                    TextField("Password", text: $password).padding()
                     
                     HStack(spacing: 10) {
-                        Button("Sign In", action: handleSignIn)
-                        Button("Sign Up", action: handleSignUp)
+                        Button("Sign In", action: handleSignIn).padding()
+                        Button("Sign Up", action: handleSignUp).padding()
                     }
-                    
-                    
                 }.padding()
-                
             }
-            
         }
-        
     }
     
     
