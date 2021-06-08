@@ -56,7 +56,7 @@ struct ContentView: View {
 
                  
                 ZStack {
-                    SettingView()
+                    SettingView(presentAuth: $presentAuth)
                 }.tabItem { Label("Settings", systemImage: "gear") }
                 .tag(4)
             }.accentColor(accent).onAppear(perform: firebaseHandler.authenticate)
@@ -89,6 +89,8 @@ struct ContentView: View {
 }
 
 struct SettingView: View {
+    @Binding var presentAuth: Bool
+    
     var body: some View {
         VStack (spacing: 5) {
             NavigationLink(
@@ -99,6 +101,14 @@ struct SettingView: View {
                 destination: CategoryForm()) {
                 Text("Add a category").padding()
             }
+            Button {
+                try! Auth.auth().signOut()
+                presentAuth = true
+                print(Auth.auth().currentUser)
+            } label: {
+                Text("Sign Out").padding()
+            }
+
         }
     }
     
@@ -118,7 +128,13 @@ class FirebaseHandler: ObservableObject {
             if let _ = user {
                 self.loadData()
             } else {
-                print(auth)
+                self.tempAccounts = Dictionary<String, Double>()
+                self.tempAccount = [String]()
+                self.tempCategories = [String]()
+                self.expenseList = [Transaction]()
+                self.incomeList = [Transaction]()
+                self.reconList = [Transaction]()
+                self.tempIncome = [String]()
             }
         }
     }
@@ -222,10 +238,10 @@ class FirebaseHandler: ObservableObject {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingView()
-      //  ConfirmAccount(width: CGFloat(360), height: CGFloat(800), accounts: ["Checking", "Savings", "Other", "Another"], categories: ["Test1", "Test2", "Test4", "Test5", "Test6"])
-        
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SettingView()
+//      //  ConfirmAccount(width: CGFloat(360), height: CGFloat(800), accounts: ["Checking", "Savings", "Other", "Another"], categories: ["Test1", "Test2", "Test4", "Test5", "Test6"])
+//        
+//    }
+//}
