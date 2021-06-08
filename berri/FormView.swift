@@ -36,7 +36,7 @@ struct AccountForm: View {
                     HStack {
                         Button(action: {
                             let initial = Double(amount)
-                            self.ref.child("addAccount/\(name)/").getData { (error, snapshot) in
+                            self.ref.child("accounts/\(name)/").getData { (error, snapshot) in
                                 if snapshot.exists() {
                                     showAlert = true
                                     alertType = "existingAcct"
@@ -44,7 +44,16 @@ struct AccountForm: View {
                                     showAlert = true
                                     alertType = "invalidAmount"
                                 } else if (error == nil) {
-                                    self.ref.child("addAccount").child(name).setValue(["amount": initial])
+                                    self.ref.child("accounts").child(name).setValue(["amount": initial]) { (err, ref) in
+                                        if err != nil {
+                                            showAlert = true
+                                            alertType = "error"
+                                        } else {
+                                            self.presentationMode.wrappedValue.dismiss()
+                                        }
+                                    }
+                                    
+                                    
                                 } else {
                                     print("Error")
                                 }
@@ -83,6 +92,8 @@ struct AccountForm: View {
                     }
                 }.padding(.horizontal, geom.size.width*0.1)
             }
+        }.onAppear {
+            ref = Database.database().reference().child(Auth.auth().currentUser!.uid)
         }
     }
 }
@@ -90,8 +101,14 @@ struct AccountForm: View {
 struct CategoryForm: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var name:String = ""
+    var type:String = ""
     @State var showAlert = false
     @State var ref: DatabaseReference! = Database.database().reference()
+    
+    init(t:String) {
+        self.type = t
+        print("HERE \(type)")
+    }
     
     var body: some View {
         GeometryReader { geom in
@@ -108,7 +125,8 @@ struct CategoryForm: View {
                     Spacer()
                     HStack {
                         Button(action: {
-                            self.ref.child("addCategory/categories/").getData { (error, snapshot) in
+                            self.ref.child(type).getData { (error, snapshot) in
+                                print(type)
                                 var array:[String] = []
                                 var found = false
                                 for child in snapshot.children {
@@ -123,7 +141,9 @@ struct CategoryForm: View {
                                 }
                                 if (found == false) {
                                     array.append(name)
-                                    self.ref.child("addCategory").setValue(["categories": array])
+                                    self.ref.child(type).setValue(array) { (err, ref) in
+                                        self.presentationMode.wrappedValue.dismiss()
+                                    }
                                 }
                             }
                         }, label: {
@@ -145,6 +165,8 @@ struct CategoryForm: View {
                     }
                 }.padding(geom.size.width*0.1)
             }
+        }.onAppear {
+            ref = Database.database().reference().child(Auth.auth().currentUser!.uid)
         }
     }
 }
