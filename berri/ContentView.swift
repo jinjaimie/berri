@@ -113,31 +113,44 @@ struct SettingView: View {
     @State var height: CGFloat
     var body: some View {
         VStack (spacing: 5) {
+            Text("Settings").font(.largeTitle).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/).foregroundColor(Color("AccentColor"))
+            Group{
+                Spacer()
+                Spacer()
+            }
             NavigationLink(
                 destination: AccountForm()) {
-                Text("Add an account").padding()
+                Text("Add an account").fontWeight(.semibold).foregroundColor(.black).padding()
             }
+            Spacer()
             NavigationLink(
-                destination: CategoryForm(t: "expenseTypes")) {
-                Text("Add an expense type").padding()
+                destination: CategoryForm(t: "expenseTypes", categoryType: "expense")) {
+                Text("Add an expense type").fontWeight(.semibold).foregroundColor(.black).padding()
             }
+            Spacer()
             NavigationLink(
-                destination: CategoryForm(t: "incomeTypes")) {
-                Text("Add an income type").padding()
+                destination: CategoryForm(t: "incomeTypes", categoryType: "income")) {
+                Text("Add an income type").fontWeight(.semibold).foregroundColor(.black).padding()
             }
-            
+            Group {
+            Spacer()
             NavigationLink(
                 destination: TipCalculator(width: width, height: height)) {
                 Text("Tip Calculator").padding()
+            }
+            Spacer()
             }
             Button {
                 try! Auth.auth().signOut()
                 presentAuth = true
                 print(Auth.auth().currentUser)
             } label: {
-                Text("Sign Out").padding()
+                Text("Sign Out").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(Color("SignOutColor")).padding()
             }
-
+            Group{
+                Spacer()
+                Spacer()
+            }
         }
     }
     
@@ -267,10 +280,10 @@ class FirebaseHandler: ObservableObject {
 }
 
 
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SettingView()
-//      //  ConfirmAccount(width: CGFloat(360), height: CGFloat(800), accounts: ["Checking", "Savings", "Other", "Another"], categories: ["Test1", "Test2", "Test4", "Test5", "Test6"])
-//        
-//    }
-//}
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+      //  ConfirmAccount(width: CGFloat(360), height: CGFloat(800), accounts: ["Checking", "Savings", "Other", "Another"], categories: ["Test1", "Test2", "Test4", "Test5", "Test6"])
+        
+    }
+}

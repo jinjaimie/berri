@@ -20,19 +20,28 @@ struct TipCalculator : View {
     @State var height: CGFloat
     
     var body: some View {
-        
         VStack {
-            TextField("Cost of Meal", value: $cost, formatter: NumberFormatter()).padding(5).border(Color.black).frame(width: width/1.2, height: height/4).textFieldStyle(RoundedBorderTextFieldStyle()).padding(5)
-            Text("Choose Tip Amount Below")
-            Picker("Tip Amount", selection: $text2) {
-                ForEach(tipOptions, id: \.self) {
-                    Text($0)
-                }
-            }.pickerStyle(SegmentedPickerStyle()).frame(width: width/1.1)
-
-            Text("You should tip: ")
-            Text(String(format: "%.2f", cost * (Double(text2)!/100)))
-            
+            Text("Tip Calculator").font(.largeTitle).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/).foregroundColor(Color("AccentColor"))
+            Spacer()
+            Group {
+                Text("Enter the cost of your meal:").fontWeight(.bold).foregroundColor(Color("AccentColor"))
+                TextField("Cost of Meal", value: $cost, formatter: NumberFormatter()).border(Color.black).frame(width: width/1.2, height: 40).textFieldStyle(RoundedBorderTextFieldStyle()).padding(5)
+            }
+            Spacer()
+            Group {
+                Text("Choose tip amount:").fontWeight(.bold).foregroundColor(Color("AccentColor"))
+                Picker("Tip Amount", selection: $text2) {
+                    ForEach(tipOptions, id: \.self) {
+                        Text($0)
+                    }
+                }.pickerStyle(SegmentedPickerStyle()).frame(width: width/1.1)
+            }
+            Spacer()
+            Group {
+                Text("You should tip: ").fontWeight(.bold).foregroundColor(Color("AccentColor"))
+                Text(String(format: "%.2f", cost * (Double(text2)!/100)))
+            }
+            Spacer()
         }
     }
 }
