@@ -21,7 +21,7 @@ struct AccountForm: View {
             ScrollView {
                 VStack (spacing: 30) {
                     HStack {
-                        Text("New account").font(.largeTitle).fontWeight(.bold)
+                        Text("New account").font(.largeTitle).fontWeight(.bold).foregroundColor(Color("AccentColor"))
                         Spacer()
                     }.padding(.bottom, geom.size.height*0.02)
                     HStack {
@@ -104,9 +104,11 @@ struct CategoryForm: View {
     var type:String = ""
     @State var showAlert = false
     @State var ref: DatabaseReference! = Database.database().reference()
+    var categoryType: String = ""
     
-    init(t:String) {
+    init(t:String, categoryType:String) {
         self.type = t
+        self.categoryType = categoryType
         print("HERE \(type)")
     }
     
@@ -115,7 +117,8 @@ struct CategoryForm: View {
             ScrollView {
                 VStack (spacing: 30) {
                     HStack {
-                        Text("New category").font(.largeTitle).fontWeight(.bold)
+                        Text("New " + categoryType + " category")
+                            .font(.largeTitle).fontWeight(.bold).foregroundColor(Color("AccentColor"))
                         Spacer()
                     }.padding(.bottom, geom.size.height*0.02)
                     HStack {

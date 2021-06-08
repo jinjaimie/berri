@@ -21,7 +21,7 @@ struct TipCalculator : View {
     
     var body: some View {
         VStack {
-            Text("Tip Calculator").font(.largeTitle).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).multilineTextAlignment(.leading).foregroundColor(Color("AccentColor"))
+            Text("Tip Calculator").font(.largeTitle).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/).foregroundColor(Color("AccentColor"))
             Spacer()
             Group {
                 Text("Enter the cost of your meal:").fontWeight(.bold).foregroundColor(Color("AccentColor"))

@@ -107,24 +107,36 @@ struct SettingView: View {
     
     var body: some View {
         VStack (spacing: 5) {
+            Text("Settings").font(.largeTitle).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/).foregroundColor(Color("AccentColor"))
+            Group{
+                Spacer()
+                Spacer()
+            }
             NavigationLink(
                 destination: AccountForm()) {
-                Text("Add an account").padding()
+                Text("Add an account").fontWeight(.semibold).foregroundColor(.black).padding()
             }
+            Spacer()
             NavigationLink(
-                destination: CategoryForm(t: "expenseTypes")) {
-                Text("Add an expense type").padding()
+                destination: CategoryForm(t: "expenseTypes", categoryType: "expense")) {
+                Text("Add an expense type").fontWeight(.semibold).foregroundColor(.black).padding()
             }
+            Spacer()
             NavigationLink(
-                destination: CategoryForm(t: "incomeTypes")) {
-                Text("Add an income type").padding()
+                destination: CategoryForm(t: "incomeTypes", categoryType: "income")) {
+                Text("Add an income type").fontWeight(.semibold).foregroundColor(.black).padding()
             }
+            Spacer()
             Button {
                 try! Auth.auth().signOut()
                 presentAuth = true
                 print(Auth.auth().currentUser)
             } label: {
-                Text("Sign Out").padding()
+                Text("Sign Out").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(Color("SignOutColor")).padding()
+            }
+            Group{
+                Spacer()
+                Spacer()
             }
 
         }
