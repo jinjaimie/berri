@@ -141,25 +141,34 @@ struct Expenditures: View {
                             
                         }
                     }.frame(height: height, alignment: .topLeading)
-                }.onAppear(perform: refreshData)
-            }.onAppear(perform: refreshData)
-        }
+                }
+            }
+        }.onAppear(perform: refreshData)
     }
     
     func refreshData() {
-        if (self.viewInt == 0) {
-            self.expenseList = self.fbHandler.expenseList
-        } else if (self.viewInt == 5) {
-            self.expenseList = self.fbHandler.reconList
-        } else if (self.viewInt == 2) {
-            self.expenseList = self.fbHandler.incomeList
-        } else if (self.viewInt == 3) {
-            self.expenseList = self.fbHandler.reconList.filter({$0.isIncome == true})
-        } else if (self.viewInt == 4) {
-            self.expenseList = self.fbHandler.expenseList.filter({$0.category == "Transfer"})
-        } else if (self.viewInt == 1) {
-            self.expenseList = self.fbHandler.reconList.filter({$0.isIncome == true}) +  self.fbHandler.incomeList
+        self.fbHandler.getExpenses {
+            if (self.viewInt == 0) {
+                self.expenseList = self.fbHandler.expenseList
+                self.chosenList = fbHandler.tempCategories
+            } else if (self.viewInt == 5) {
+                self.expenseList = self.fbHandler.reconList
+                self.chosenList = fbHandler.tempCategories
+            } else if (self.viewInt == 2) {
+                self.expenseList = self.fbHandler.incomeList
+                self.chosenList = fbHandler.tempIncome
+            } else if (self.viewInt == 3) {
+                self.expenseList = self.fbHandler.reconList.filter({$0.isIncome == true})
+                self.chosenList = fbHandler.tempCategories
+            } else if (self.viewInt == 4) {
+                self.expenseList = self.fbHandler.expenseList.filter({$0.category == "Transfer"})
+                self.chosenList = ["Transfer"]
+            } else if (self.viewInt == 1) {
+                self.expenseList = self.fbHandler.reconList.filter({$0.isIncome == true}) +  self.fbHandler.incomeList
+                self.chosenList = fbHandler.tempCategories + fbHandler.tempIncome
+            }
         }
+        
     }
     
     
