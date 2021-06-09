@@ -19,13 +19,30 @@ struct AuthView: View {
     var body: some View {
         GeometryReader { m in
             NavigationView {
-                VStack(spacing: 16) {
-                    TextField("Email", text: $email).padding()
-                    TextField("Password", text: $password).padding()
+               
+                VStack(spacing: 8) {
+                    Image("berri")
+                    HStack {
+                        Text("Email       ")
+                        TextField("Email", text: $email).keyboardType(.emailAddress).autocapitalization(.none).padding()
+                    }
+                    HStack {
+                        Text("Password")
+                        SecureField("Password", text: $password).padding()
+                    }
+                    
                     
                     HStack(spacing: 10) {
-                        Button("Sign In", action: handleSignIn).padding()
-                        Button("Sign Up", action: handleSignUp).padding()
+                        Button {
+                            handleSignIn()
+                        } label: {
+                            Text("Sign In").bold()
+                        }.padding()
+                        Button {
+                            handleSignUp()
+                        } label: {
+                            Text("Sign Up").bold()
+                        }.padding()
                     }
                 }.padding()
             }
@@ -37,14 +54,19 @@ struct AuthView: View {
     func handleSignIn() {
         
         Auth.auth().signIn(withEmail: email, password: password) { authResult, err in
-            print(authResult?.user)
-            presentationMode.wrappedValue.dismiss()
+            if err == nil {
+                presentationMode.wrappedValue.dismiss()
+            }
+            
         }
     }
     
     func handleSignUp() {
+        
         Auth.auth().createUser(withEmail: email, password: password) { authResult, err in
-            presentationMode.wrappedValue.dismiss()
+            if err == nil {
+                presentationMode.wrappedValue.dismiss()
+            }
         }
     }
     
