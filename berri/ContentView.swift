@@ -226,8 +226,7 @@ class FirebaseHandler: ObservableObject {
     }
     
     func getExpenses(completion: @escaping () -> Void) {
-        if (Auth.auth().currentUser != nil) {
-            let userID = Auth.auth().currentUser!.uid
+        if let userID = Auth.auth().currentUser?.uid {
             let ref = Database.database().reference()
             
             ref.child(userID).child("expenditures").observeSingleEvent(of: .value) { snapshot in
