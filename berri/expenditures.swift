@@ -168,7 +168,6 @@ struct Expenditures: View {
                 self.chosenList = fbHandler.tempCategories + fbHandler.tempIncome
             }
         }
-        
     }
     
     

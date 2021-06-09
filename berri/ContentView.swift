@@ -228,6 +228,7 @@ class FirebaseHandler: ObservableObject {
     func getExpenses(completion: @escaping () -> Void) {
         if let userID = Auth.auth().currentUser?.uid {
             let ref = Database.database().reference()
+            reconList = []
             
             ref.child(userID).child("expenditures").observeSingleEvent(of: .value) { snapshot in
                 if snapshot.exists() {
@@ -236,6 +237,34 @@ class FirebaseHandler: ObservableObject {
                     // print("Expenses: ", temp.map({$0.name}))
                     completion()
                 }
+            }
+
+            ref.child(userID).child("expenseTypes").observeSingleEvent(of: .value) { snapshot in
+                if snapshot.exists() {
+                    self.tempCategories = self.makeItems(from: snapshot).sorted(by: {$0 < $1})
+                }
+            }
+            ref.child(userID).child("incomeTypes").observeSingleEvent(of: .value) { snapshot in
+                if snapshot.exists() {
+                    self.tempIncome = self.makeItems(from: snapshot).sorted(by: {$0 < $1})
+                }
+            }
+            ref.child(userID).child("income").observeSingleEvent(of: .value) { snapshot in
+                if snapshot.exists() {
+                    let temp = self.createTransactions(from: snapshot, isIncome: true)
+                    self.incomeList = temp.sorted(by: {$0.convDate > $1.convDate})
+                    // print("Incomes: ", temp.map({$0.name}))
+                }
+            }
+
+
+            ref.child(userID).child("accounts").observeSingleEvent(of: .value) { snapshot in
+                if snapshot.exists() {
+                    let temp = self.makeAccounts(from: snapshot)
+                    self.tempAccount = Array(temp.keys).sorted(by: {$0 < $1})
+                    self.tempAccounts = temp
+                }
+         
             }
         }
     }
