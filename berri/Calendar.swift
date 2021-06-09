@@ -68,14 +68,18 @@ struct CalendarView: View {
     
     func getYearRange() -> [Int] {
         let total = (fbHandler.reconList + fbHandler.incomeList).filter({$0.category != "Transfer"}).map({$0.convDate}).sorted(by: {$0 > $1})
-        let last : Date! = total.last
-        let first : Date! = total.first
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy"
-        
-        let arr  = Array(Int(dateFormatter.string(from: last))!...Int(dateFormatter.string(from: first))!)
-        
-        return arr
+        if (total.count != 0) {
+            let last : Date! = total.last
+            let first : Date! = total.first
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy"
+            
+            let arr  = Array(Int(dateFormatter.string(from: last))!...Int(dateFormatter.string(from: first))!)
+            
+            return arr
+        } else {
+            return []
+        }
     }
     
     func filteredYear(year: Int) -> [MTransaction] {

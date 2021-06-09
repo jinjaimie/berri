@@ -26,7 +26,6 @@ struct ConfirmAccount: View {
     @State var confirmMessage : String = ""
     
     var body: some View {
-        
         VStack() {
             Picker("Type", selection: $selector) {
                 ForEach(moneyType, id: \.self) {
@@ -106,8 +105,6 @@ struct ConfirmAccount: View {
                         
                     }.frame(width: width/1.2)
                     Spacer()
-                }
-                Spacer()
                 if (selector == "Income") {
                     HStack {
                         Picker(selection: $addItem.incomeType, label: HStack {
@@ -135,74 +132,76 @@ struct ConfirmAccount: View {
                 
             }
             Spacer()
-            
-            HStack {
+            VStack {
                 Spacer()
-                Button(action: {
-                    self.addItem.name = ""
-                    self.addItem.value = 0.0
-                    self.addItem.accountIn = ""
-                    self.addItem.accountOut = ""
-                    self.addItem.date = ""
-                    self.addItem.incomeType = ""
-                    self.addItem.category = ""
-                    self.value = 0.0
-                }) {
-                    Text("Clear").font(.title2).fontWeight(.bold).foregroundColor(.black)
-                }
-                Spacer()
-                Button(action: {
-                    self.confirm.toggle()
-                    let tempConvDate = showItems.itemDateFormat.string(from: addItem.convDate)
-                    confirmMessage = "Name: \(self.addItem.name)" + "\n Value: + \(self.value!)" + "\n Date: \(tempConvDate) \n Account In: \(self.addItem.accountIn) \n Account Out: \(self.addItem.accountOut) \n Category: \(self.addItem.category) \n Income Type: \(self.addItem.incomeType)"
-                }) {
-                    Text("Confirm").font(.title2)
-                }.alert(isPresented:$confirm) {
-                    Alert(
-                        title: Text("Does the following information look correct?"),
-                        message: Text(self.confirmMessage),
-                        primaryButton: .destructive(Text("Confirm")) {
-                            let ref = Database.database().reference().child(Auth.auth().currentUser!.uid)
-                            let tempConvDate = showItems.itemDateFormat.string(from: addItem.convDate)
-                            
-                            if (selector == "Expense") {
-                                
-                                let newKey : String = ref.child("expenditure").childByAutoId().key!
-                                ref.child("expenditures").child(newKey).setValue(["account": addItem.accountOut, "category": addItem.category, "date": tempConvDate, "name": addItem.name, "value": -abs(self.value!)])
-                                print("did expense at ", newKey)
-                                
-                            } else if (selector == "Income") {
-                                
-                                let newKey : String = ref.child("income").childByAutoId().key!
-                                ref.child("income").child(newKey).setValue(["account": addItem.accountIn, "category": addItem.category, "date": tempConvDate, "incomeType": addItem.incomeType, "name": addItem.name, "value": abs(self.value!)])
-                                print("did income at: ", newKey)
-                                
-                            } else if (selector == "Transfer") {
-                                
-                                addItem.name = (addItem.accountOut + " to " + addItem.accountIn)
-                                let newKeyI : String = ref.child("income").childByAutoId().key!
-                                ref.child("income").child(newKeyI).setValue(["account": addItem.accountIn, "category": "", "date": tempConvDate, "incomeType": "Transfer", "name": (addItem.accountOut + " to " + addItem.accountIn), "value": -abs(self.value!)])
-                                let newKeyE : String = ref.child("expenditure").childByAutoId().key!
-                                ref.child("expenditures").child(newKeyE).setValue(["account": addItem.accountOut, "category": "Transfer", "date": tempConvDate, "name": addItem.name, "value": abs(self.value!)])
-                            }
-                            self.addItem.name = ""
-                            self.addItem.value = 0.0
-                            self.addItem.accountIn = ""
-                            self.addItem.accountOut = ""
-                            self.addItem.date = ""
-                            self.addItem.incomeType = ""
-                            self.addItem.category = ""
-                            self.value = 0.0
-                        },
-                        secondaryButton: .cancel()
-                    )
-                    
-                }
+                HStack {
                     Spacer()
-                
+                    Button(action: {
+                        self.addItem.name = ""
+                        self.addItem.value = 0.0
+                        self.addItem.accountIn = ""
+                        self.addItem.accountOut = ""
+                        self.addItem.date = ""
+                        self.addItem.incomeType = ""
+                        self.addItem.category = ""
+                        self.value = 0.0
+                    }) {
+                        Text("Clear").font(.title2).fontWeight(.bold).foregroundColor(.black)
+                    }
+                    Spacer()
+                    Button(action: {
+                        self.confirm.toggle()
+                        let tempConvDate = showItems.itemDateFormat.string(from: addItem.convDate)
+                        confirmMessage = "Name: \(self.addItem.name)" + "\n Value: + \(self.value!)" + "\n Date: \(tempConvDate) \n Account In: \(self.addItem.accountIn) \n Account Out: \(self.addItem.accountOut) \n Category: \(self.addItem.category) \n Income Type: \(self.addItem.incomeType)"
+                    }) {
+                        Text("Confirm").font(.title2).fontWeight(.bold).foregroundColor(.black)
+                    }.alert(isPresented:$confirm) {
+                        Alert(
+                            title: Text("Does the following information look correct?"),
+                            message: Text(self.confirmMessage),
+                            primaryButton: .destructive(Text("Confirm")) {
+                                let ref = Database.database().reference().child(Auth.auth().currentUser!.uid)
+                                let tempConvDate = showItems.itemDateFormat.string(from: addItem.convDate)
+                                
+                                if (selector == "Expense") {
+                                    
+                                    let newKey : String = ref.child("expenditure").childByAutoId().key!
+                                    ref.child("expenditures").child(newKey).setValue(["account": addItem.accountOut, "category": addItem.category, "date": tempConvDate, "name": addItem.name, "value": -abs(self.value!)])
+                                    print("did expense at ", newKey)
+                                    
+                                } else if (selector == "Income") {
+                                    
+                                    let newKey : String = ref.child("income").childByAutoId().key!
+                                    ref.child("income").child(newKey).setValue(["account": addItem.accountIn, "category": addItem.category, "date": tempConvDate, "incomeType": addItem.incomeType, "name": addItem.name, "value": abs(self.value!)])
+                                    print("did income at: ", newKey)
+                                    
+                                } else if (selector == "Transfer") {
+                                    
+                                    addItem.name = (addItem.accountOut + " to " + addItem.accountIn)
+                                    let newKeyI : String = ref.child("income").childByAutoId().key!
+                                    ref.child("income").child(newKeyI).setValue(["account": addItem.accountIn, "category": "", "date": tempConvDate, "incomeType": "Transfer", "name": (addItem.accountOut + " to " + addItem.accountIn), "value": -abs(self.value!)])
+                                    let newKeyE : String = ref.child("expenditure").childByAutoId().key!
+                                    ref.child("expenditures").child(newKeyE).setValue(["account": addItem.accountOut, "category": "Transfer", "date": tempConvDate, "name": addItem.name, "value": abs(self.value!)])
+                                }
+                                self.addItem.name = ""
+                                self.addItem.value = 0.0
+                                self.addItem.accountIn = ""
+                                self.addItem.accountOut = ""
+                                self.addItem.date = ""
+                                self.addItem.incomeType = ""
+                                self.addItem.category = ""
+                                self.value = 0.0
+                            },
+                            secondaryButton: .cancel()
+                        )
+                        
+                    }
+                    Spacer()
+                }
             }
         }
     }
+}
 }
 
 

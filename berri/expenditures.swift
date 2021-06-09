@@ -227,7 +227,7 @@ struct ExpenseListByCategory: View {
         ScrollView {
             VStack(spacing: 0) {
                 category != "Transfer" ?
-                    Text("Transactions for \n" + category).font(.title2).padding(15).textCase(.uppercase).foregroundColor(.black).multilineTextAlignment(.center) : nil
+                    Text("Transactions for " + category).font(.largeTitle).fontWeight(.bold).padding(15).foregroundColor(Color("AccentColor")).multilineTextAlignment(.center) : nil
                 ForEach(expenses, id: \.self) { i in
                     showItems(exp: i, width: width, height: height, fbHandler: fbHandler)
                 }

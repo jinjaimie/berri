@@ -136,7 +136,7 @@ struct SettingView: View {
             Spacer()
             NavigationLink(
                 destination: TipCalculator(width: width, height: height)) {
-                Text("Tip Calculator").padding()
+                Text("Tip Calculator").fontWeight(.semibold).foregroundColor(.black).padding()
             }
             Spacer()
             }
