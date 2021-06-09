@@ -226,17 +226,20 @@ class FirebaseHandler: ObservableObject {
     }
     
     func getExpenses(completion: @escaping () -> Void) {
-        let userID = Auth.auth().currentUser!.uid
-        let ref = Database.database().reference()
-        
-        ref.child(userID).child("expenditures").observeSingleEvent(of: .value) { snapshot in
-            if snapshot.exists() {
-                let temp = self.createTransactions(from: snapshot, isIncome: false)
-                self.expenseList = temp.sorted(by: {$0.convDate > $1.convDate})
-                // print("Expenses: ", temp.map({$0.name}))
-                completion()
+        if let userID = Auth.auth().currentUser?.uid {
+            let ref = Database.database().reference()
+            
+            ref.child(userID).child("expenditures").observeSingleEvent(of: .value) { snapshot in
+                if snapshot.exists() {
+                    let temp = self.createTransactions(from: snapshot, isIncome: false)
+                    self.expenseList = temp.sorted(by: {$0.convDate > $1.convDate})
+                    // print("Expenses: ", temp.map({$0.name}))
+                    completion()
+                }
             }
         }
+        
+        
         
     }
     
