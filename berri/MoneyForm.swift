@@ -55,7 +55,7 @@ struct ConfirmAccount: View {
                         Spacer()
                         HStack(spacing: 10) {
                             Text("Name of Transaction").fontWeight(.bold).foregroundColor(Color("AccentColor"))
-                            TextField(addItem.name, text: $addItem.name).font(.title).border(Color.black).padding(10)
+                            TextField("Name", text: self.$addItem.name).dismissKeyboardOnTap().font(.title).border(Color.black).padding(10)
                         }.frame(width: width/1.2)
                         Spacer()
                         HStack {
@@ -101,7 +101,7 @@ struct ConfirmAccount: View {
                     HStack {
                         Text("Amount of money:").fontWeight(.bold).foregroundColor(Color("AccentColor"))
                         
-                        CurrencyTextField("Amount", value: self.$value, alwaysShowFractions: false, numberOfDecimalPlaces: 2, currencySymbol: "US$").font(.title).multilineTextAlignment(TextAlignment.trailing)
+                        CurrencyTextField("Amount", value: self.$value, alwaysShowFractions: false, numberOfDecimalPlaces: 2, currencySymbol: "US$").keyboardType(.decimalPad).dismissKeyboardOnTap().font(.title).multilineTextAlignment(TextAlignment.trailing)
                         
                     }.frame(width: width/1.2)
                     Spacer()
@@ -145,14 +145,17 @@ struct ConfirmAccount: View {
                         self.addItem.incomeType = ""
                         self.addItem.category = ""
                         self.value = 0.0
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                     }) {
                         Text("Clear").font(.title2).fontWeight(.bold).foregroundColor(.black)
                     }
                     Spacer()
                     Button(action: {
-                        self.confirm.toggle()
                         let tempConvDate = showItems.itemDateFormat.string(from: addItem.convDate)
                         confirmMessage = "Name: \(self.addItem.name)" + "\n Value: + \(self.value!)" + "\n Date: \(tempConvDate) \n Account In: \(self.addItem.accountIn) \n Account Out: \(self.addItem.accountOut) \n Category: \(self.addItem.category) \n Income Type: \(self.addItem.incomeType)"
+                        self.confirm.toggle()
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                        
                     }) {
                         Text("Confirm").font(.title2).fontWeight(.bold).foregroundColor(.black)
                     }.alert(isPresented:$confirm) {
