@@ -238,9 +238,6 @@ class FirebaseHandler: ObservableObject {
                 }
             }
         }
-        
-        
-        
     }
     
     func makeItems(from snapshot: DataSnapshot) -> [String] {
